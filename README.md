@@ -93,7 +93,9 @@ python main.py
 ```
 
 **📊 Features in Detail**
+
 **1. Network Scanner**
+
 Simulates WiFi network discovery
 
 Shows SSID, BSSID, signal strength
@@ -103,6 +105,7 @@ Identifies encryption types (WEP, WPA, WPA2, WPA3)
 Calculates security scores
 
 **2. Security Analysis**
+
 Deep vulnerability assessment
 
 Encryption strength analysis
@@ -114,6 +117,7 @@ Threat level classification
 Custom recommendations
 
 **3. Password Generator**
+
 Configurable length (8-32 characters)
 
 Multiple character sets
@@ -125,6 +129,7 @@ Hash generation (MD5, SHA256)
 Password history
 
 **4. Education Center**
+
 Interactive lessons
 
 Security glossary
@@ -136,6 +141,7 @@ Achievement system
 Progress tracking
 
 **5. Reporting System**
+
 Detailed security reports
 
 Export to JSON/PDF
@@ -145,7 +151,9 @@ Historical data
 Comparative analysis
 
 **🛡️ Security & Privacy**
+
 Data Handling
+
 All data stored locally
 
 No internet connectivity required
@@ -154,8 +162,9 @@ Encrypted data storage
 
 Automatic backup system
 
-**Legal Compliance
-Educational Use Only**
+**Legal Compliance**
+
+Educational Use Only
 
 Test only on networks you own
 
@@ -164,6 +173,7 @@ Follow local laws and regulations
 Respect privacy and security laws
 
 **Privacy Features**
+
 No data collection
 
 No analytics tracking
@@ -195,7 +205,9 @@ fetch('/api/v1/scan', {
 ```
 
 **🧩 Modules**
+
 Frontend (HTML/CSS/JS)
+
 Bootstrap 5: Responsive design
 
 Font Awesome: Icons
@@ -207,6 +219,7 @@ Custom CSS: Professional styling
 Vanilla JavaScript: No framework dependencies
 
 **Backend (Python/Flask)**
+
 Flask: Web framework
 
 JSON: Data storage
