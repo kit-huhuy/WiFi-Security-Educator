@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiFi Security Educator - Protect Your Network</title>
+    
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="WiFi Security Educator - AI-powered tool for analyzing WiFi network security, generating strong passwords, and learning security best practices.">
+    <meta name="keywords" content="WiFi security, network scanner, password generator, security analysis, cybersecurity">
+    <meta name="author" content="WiFi Security Team">
+    <meta property="og:title" content="WiFi Security Educator">
+    <meta property="og:description" content="Protect your WiFi network with our security analysis tool">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+    <!-- Page-specific CSS -->
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: white;
+            padding: 5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+        
+        .stats-counter {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+        }
+        
+        .stats-label {
+            color: var(--gray);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .quick-action-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .quick-action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .action-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .network-animation {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+        
+        .network-node {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+        
+        .security-tip {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(58, 12, 163, 0.1));
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-shield-alt"></i>
+                <span>WiFi Security Educator</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">
+                            <i class="fas fa-dashboard"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/scan">
+                            <i class="fas fa-wifi"></i> Scan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/analyze">
+                            <i class="fas fa-search"></i> Analyze
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/generate">
+                            <i class="fas fa-key"></i> Generate
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/education">
+                            <i class="fas fa-graduation-cap"></i> Learn
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/settings">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container position-relative">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-1 fw-bold mb-3">Protect Your WiFi Network</h1>
+                    <p class="lead mb-4">
+                        AI-powered security analysis tool to scan, analyze, and secure your wireless networks. 
+                        Learn security best practices and protect against vulnerabilities.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="/scan" class="btn btn-light btn-lg">
+                            <i class="fas fa-satellite-dish"></i> Start Scanning
+                        </a>
+                        <a href="/education" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-graduation-cap"></i> Learn Security
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 mt-5 mt-lg-0">
+                    <div class="network-animation">
+                        <div class="network-node" style="top: 50%; left: 50%; animation-delay: 0s;"></div>
+                        <div class="network-node" style="top: 20%; left: 20%; animation-delay: 0.5s; background: var(--success);"></div>
+                        <div class="network-node" style="top: 20%; left: 80%; animation-delay: 1s; background: var(--warning);"></div>
+                        <div class="network-node" style="top: 80%; left: 20%; animation-delay: 1.5s; background: var(--danger);"></div>
+                        <div class="network-node" style="top: 80%; left: 80%; animation-delay: 2s; background: var(--info);"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">Powerful Security Features</h2>
+                <p class="lead text-muted">Everything you need to secure your WiFi network</p>
+            </div>
+            
+            <div class="row g-4">
+                <!-- Feature 1 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card card">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-wifi"></i>
+                            </div>
+                            <h4 class="card-title mb-3">Network Scanner</h4>
+                            <p class="card-text text-muted">
+                                Discover nearby WiFi networks and analyze their security configurations.
+                            </p>
+                            <a href="/scan" class="btn btn-outline-primary">Start Scan</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card card">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h4 class="card-title mb-3">Security Analysis</h4>
+                            <p class="card-text text-muted">
+                                Deep analysis of network vulnerabilities and security weaknesses.
+                            </p>
+                            <a href="/analyze" class="btn btn-outline-primary">Analyze Now</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card card">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-key"></i>
+                            </div>
+                            <h4 class="card-title mb-3">Password Generator</h4>
+                            <p class="card-text text-muted">
+                                Generate strong, secure passwords with customizable options.
+                            </p>
+                            <a href="/generate" class="btn btn-outline-primary">Generate</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Feature 4 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card card">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <h4 class="card-title mb-3">Security Reports</h4>
+                            <p class="card-text text-muted">
+                                Detailed reports and recommendations for improving network security.
+                            </p>
+                            <a href="/generate" class="btn btn-outline-primary">Create Report</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">Security Insights</h2>
+                <p class="lead text-muted">Real-time statistics and security metrics</p>
+            </div>
+            
+            <div class="row text-center">
+                <div class="col-md-3 mb-4">
+                    <div class="quick-action-card">
+                        <div class="stats-counter" id="totalScans">0</div>
+                        <div class="stats-label">Total Scans</div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="quick-action-card">
+                        <div class="stats-counter" id="networksFound">0</div>
+                        <div class="stats-label">Networks Found</div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="quick-action-card">
+                        <div class="stats-counter" id="reportsCount">0</div>
+                        <div class="stats-label">Reports Generated</div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="quick-action-card">
+                        <div class="stats-counter" id="serverStatus">
+                            <span class="badge bg-success">ONLINE</span>
+                        </div>
+                        <div class="stats-label">Server Status</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">Quick Actions</h2>
+                <p class="lead text-muted">Get started with these security actions</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="quick-action-card">
+                        <div class="action-icon">
+                            <i class="fas fa-satellite-dish"></i>
+                        </div>
+                        <h4>Scan Networks</h4>
+                        <p class="text-muted">Quick scan for nearby WiFi networks</p>
+                        <a href="/scan" class="btn btn-primary w-100">Start Scan</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="quick-action-card">
+                        <div class="action-icon">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <h4>Generate Password</h4>
+                        <p class="text-muted">Create a strong secure password</p>
+                        <button onclick="generatePassword()" class="btn btn-primary w-100">Generate Now</button>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="quick-action-card">
+                        <div class="action-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h4>Learn Security</h4>
+                        <p class="text-muted">Educational resources about WiFi security</p>
+                        <a href="/education" class="btn btn-primary w-100">Start Learning</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security Tips -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="security-tip">
+                <div class="row align-items-center">
+                    <div class="col-md-2 text-center mb-3 mb-md-0">
+                        <i class="fas fa-lightbulb fa-3x text-warning"></i>
+                    </div>
+                    <div class="col-md-10">
+                        <h4 class="mb-2">Security Tip of the Day</h4>
+                        <p class="mb-0">
+                            <strong>Always use WPA3 encryption when available.</strong> 
+                            WPA3 provides stronger security than WPA2, with better protection 
+                            against brute-force attacks and forward secrecy.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4 class="mb-3">
+                        <i class="fas fa-shield-alt"></i> WiFi Security Educator
+                    </h4>
+                    <p class="text-light">
+                        An educational tool for analyzing and improving WiFi network security.
+                        Learn best practices and protect your digital life.
+                    </p>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="mb-3">Tools</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/scan" class="text-light text-decoration-none">Network Scanner</a></li>
+                        <li><a href="/analyze" class="text-light text-decoration-none">Security Analysis</a></li>
+                        <li><a href="/generate" class="text-light text-decoration-none">Password Generator</a></li>
+                        <li><a href="/report" class="text-light text-decoration-none">Reports</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="mb-3">Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/education" class="text-light text-decoration-none">Education Center</a></li>
+                        <li><a href="/dashboard" class="text-light text-decoration-none">Dashboard</a></li>
+                        <li><a href="/settings" class="text-light text-decoration-none">Settings</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Documentation</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <h5 class="mb-3">Legal Notice</h5>
+                    <p class="small text-light">
+                        <i class="fas fa-exclamation-triangle text-warning me-1"></i>
+                        <strong>IMPORTANT:</strong> This tool is for <strong>EDUCATIONAL PURPOSES ONLY</strong>. 
+                        Always test on networks you own or have explicit written permission to test.
+                    </p>
+                    <div class="mt-3">
+                        <span class="badge bg-success">Version 2.0.0</span>
+                        <span class="badge bg-info ms-2">Educational Use</span>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="bg-light my-4">
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2024 WiFi Security Educator. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">
+                        <a href="#" class="text-light text-decoration-none me-3">Privacy Policy</a>
+                        <a href="#" class="text-light text-decoration-none">Terms of Service</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="/static/js/app.js"></script>
+    
+    <script>
+        // Load stats on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate stats
+            const counters = document.querySelectorAll('.stats-counter');
+            counters.forEach(counter => {
+                const target = parseInt(counter.textContent) || 100;
+                Utils.animateValue(counter, 0, target, 2000);
+            });
+            
+            // Check server status
+            fetch('/api/v1/status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'online') {
+                        // Update stats
+                        document.getElementById('totalScans').textContent = data.scans_count;
+                        document.getElementById('networksFound').textContent = data.networks_found || 0;
+                        document.getElementById('reportsCount').textContent = data.reports_count;
+                    }
+                });
+        });
+        
+        // Quick action function
+        function generatePassword() {
+            PasswordGenerator.generatePassword();
+            Utils.showNotification('Password generation started!', 'info');
+        }
+    </script>
+</body>
+</html>

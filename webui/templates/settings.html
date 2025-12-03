@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - WiFi Security Educator</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+    <style>
+        .settings-header {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+            padding: 2rem 0;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+        }
+        
+        .settings-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .settings-section {
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 1rem 0;
+        }
+        
+        .settings-section:last-child {
+            border-bottom: none;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #4361ee;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .backup-card {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), rgba(58, 12, 163, 0.05));
+            border: 2px dashed rgba(67, 97, 238, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition-normal);
+        }
+        
+        .backup-card:hover {
+            transform: translateY(-5px);
+            border-color: #4361ee;
+        }
+        
+        .danger-zone {
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.05), rgba(220, 53, 69, 0.1));
+            border: 2px solid rgba(220, 53, 69, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+        }
+        
+        .update-card {
+            background: linear-gradient(135deg, rgba(25, 135, 84, 0.05), rgba(25, 135, 84, 0.1));
+            border: 2px solid rgba(25, 135, 84, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+        }
+        
+        .color-scheme-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: var(--transition-fast);
+        }
+        
+        .color-scheme-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .color-scheme-option.active {
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+        }
+        
+        .log-container {
+            background: #f8f9fa;
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+        
+        .api-key {
+            font-family: monospace;
+            background: #212529;
+            color: #20c997;
+            padding: 0.5rem;
+            border-radius: var(--radius-sm);
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body data-bs-theme="light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-shield-alt"></i>
+                <span>WiFi Security Educator</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">
+                            <i class="fas fa-dashboard"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/scan">
+                            <i class="fas fa-wifi"></i> Scan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/analyze">
+                            <i class="fas fa-search"></i> Analyze
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/generate">
+                            <i class="fas fa-key"></i> Generate
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/report">
+                            <i class="fas fa-file-alt"></i> Reports
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/education">
+                            <i class="fas fa-graduation-cap"></i> Learn
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/settings">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="settings-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-5 fw-bold">
+                        <i class="fas fa-cog"></i> Settings
+                    </h1>
+                    <p class="lead mb-0">
+                        Configure application preferences and system settings
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <button class="btn btn-light" onclick="saveAllSettings()">
+                        <i class="fas fa-save me-2"></i>Save All
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-lg-8">
+                <!-- Application Settings -->
+                <div class="settings-card">
+                    <h4 class="mb-4">
+                        <i class="fas fa-sliders-h me-2"></i>Application Settings
+                    </h4>
+                    
+                    <div class="settings-section">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6>Dark Mode</h6>
+                                <small class="text-muted">Switch between light and dark themes</small>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="darkModeToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h6 class="mb-3">Color Scheme</h6>
+                        <div class="d-flex gap-3">
+                            <div class="color-scheme-option active" 
+                                 style="background: #4361ee;" 
+                                 onclick="selectColorScheme('blue')"
+                                 data-bs-toggle="tooltip" 
+                                 title="Default Blue">
+                            </div>
+                            <div class="color-scheme-option" 
+                                 style="background: #198754;" 
+                                 onclick="selectColorScheme('green')"
+                                 data-bs-toggle="tooltip" 
+                                 title="Green">
+                            </div>
+                            <div class="color-scheme-option" 
+                                 style="background: #fd7e14;" 
+                                 onclick="selectColorScheme('orange')"
+                                 data-bs-toggle="tooltip" 
+                                 title="Orange">
+                            </div>
+                            <div class="color-scheme-option" 
+                                 style="background: #6f42c1;" 
+                                 onclick="selectColorScheme('purple')"
+                                 data-bs-toggle="tooltip" 
+                                 title="Purple">
+                            </div>
+                            <div class="color-scheme-option" 
+                                 style="background: #20c997;" 
+                                 onclick="selectColorScheme('teal')"
+                                 data-bs-toggle="tooltip" 
+                                 title="Teal">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6>Auto-save Reports</h6>
+                                <small class="text-muted">Automatically save generated reports</small>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="autoSaveToggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6>Notifications</h6>
+                                <small class="text-muted">Show desktop notifications</small>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="notificationsToggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6>Scan Animation</h6>
+                                <small class="text-muted">Show scanning animations</small>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="animationsToggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div class="settings-card">
+                    <h4 class="mb-4">
+                        <i class="fas fa-shield-alt me-2"></i>Security Settings
+                    </h4>
+                    
+                    <div class="settings-section">
+                        <div class="mb-3">
+                            <label class="form-label">Session Timeout</label>
+                            <select class="form-select" id="sessionTimeout">
+                                <option value="15">15 minutes</option>
+                                <option value="30" selected>30 minutes</option>
+                                <option value="60">60 minutes</option>
+                                <option value="120">2 hours</option>
+                                <option value="0">Never (not recommended)</option>
+                            </select>
+                            <small class="text-muted">Automatically log out after inactivity</small>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="mb-3">
+                            <label class="form-label">Password History</label>
+                            <select class="form-select" id="passwordHistory">
+                                <option value="5">Remember last 5 passwords</option>
+                                <option value="10" selected>Remember last 10 passwords</option>
+                                <option value="20">Remember last 20 passwords</option>
+                                <option value="0">Don't remember passwords</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="mb-3">
+                            <label class="form-label">Data Encryption</label>
+                            <select class="form-select" id="encryptionLevel">
+                                <option value="basic">Basic (AES-128)</option>
+                                <option value="standard" selected>Standard (AES-256)</option>
+                                <option value="high">High (AES-256 + RSA-2048)</option>
+                            </select>
+                            <small class="text-muted">Higher encryption = better security but slower performance</small>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6>Clear Browser Data on Exit</h6>
+                                <small class="text-muted">Automatically clear cache and cookies</small>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="clearDataToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API & Integration -->
+                <div class="settings-card">
+                    <h4 class="mb-4">
+                        <i class="fas fa-plug me-2"></i>API & Integration
+                    </h4>
+                    
+                    <div class="settings-section">
+                        <div class="mb-3">
+                            <label class="form-label">API Access Key</label>
+                            <div class="api-key" id="apiKeyDisplay">
+                                ws_sk_${generateRandomString(32)}
+                            </div>
+                            <small class="text-muted">Use this key for API authentication</small>
+                            <div class="mt-2">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="regenerateApiKey()">
+                                    <i class="fas fa-redo me-1"></i>Regenerate
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyApiKey()">
+                                    <i class="fas fa-copy me-1"></i>Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="mb-3">
+                            <label class="form-label">Webhook URL</label>
+                            <input type="text" class="form-control" id="webhookUrl" 
+                                   placeholder="https://example.com/webhook">
+                            <small class="text-muted">Receive notifications for important events</small>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6>Enable Analytics</h6>
+                                <small class="text-muted">Share anonymous usage data to improve the app</small>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="analyticsToggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="danger-zone">
+                    <h4 class="mb-4 text-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Danger Zone
+                    </h4>
+                    
+                    <div class="settings-section">
+                        <div class="mb-3">
+                            <h6>Clear All Data</h6>
+                            <p class="text-muted">Permanently delete all scans, reports, and settings</p>
+                            <button class="btn btn-outline-danger" onclick="clearAllData()">
+                                <i class="fas fa-trash me-2"></i>Clear All Data
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="mb-3">
+                            <h6>Reset to Defaults</h6>
+                            <p class="text-muted">Reset all settings to factory defaults</p>
+                            <button class="btn btn-outline-warning" onclick="resetToDefaults()">
+                                <i class="fas fa-undo me-2"></i>Reset Settings
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="mb-3">
+                            <h6>Export Debug Logs</h6>
+                            <p class="text-muted">Download application logs for troubleshooting</p>
+                            <button class="btn btn-outline-info" onclick="exportLogs()">
+                                <i class="fas fa-download me-2"></i>Export Logs
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-lg-4">
+                <!-- System Info -->
+                <div class="settings-card mb-4">
+                    <h4 class="mb-4">
+                        <i class="fas fa-info-circle me-2"></i>System Information
+                    </h4>
+                    
+                    <div class="settings-section">
+                        <div class="mb-3">
+                            <h6>Application Version</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>WiFi Security Educator</span>
+                                <span class="badge bg-primary" id="appVersion">v2.0.0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="mb-3">
+                            <h6>Last Update Check</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Check for Updates</span>
+                                <span class="text-muted" id="lastUpdateCheck">Today</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="mb-3">
+                            <h6>Storage Usage</h6>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar" id="storageProgress" style="width: 25%"></div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted">Scans: <span id="scanCount">12</span></small>
+                                <small class="text-muted">Reports: <span id="reportCount">5</span></small>
+                                <small class="text-muted" id="storageUsed">25 MB / 100 MB</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="mb-3">
+                            <h6>Server Status</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Connection</span>
+                                <span class="badge bg-success">
+                                    <i class="fas fa-circle"></i> Online
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <button class="btn btn-outline-primary w-100" onclick="checkForUpdates()">
+                            <i class="fas fa-sync-alt me-2"></i>Check for Updates
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Backup & Restore -->
+                <div class="settings-card mb-4">
+                    <h4 class="mb-4">
+                        <i class="fas fa-database me-2"></i>Backup & Restore
+                    </h4>
+                    
+                    <div class="backup-card mb-3" onclick="createBackup()">
+                        <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                        <h5>Create Backup</h5>
+                        <p class="text-muted small">Backup all your data to a secure file</p>
+                    </div>
+                    
+                    <div class="backup-card" onclick="restoreBackup()">
+                        <i class="fas fa-cloud-download-alt fa-3x text-success mb-3"></i>
+                        <h5>Restore Backup</h5>
+                        <p class="text-muted small">Restore data from a backup file</p>
+                    </div>
+                </div>
+
+                <!-- Activity Logs -->
+                <div class="settings-card">
+                    <h4 class="mb-4">
+                        <i class="fas fa-history me-2"></i>Recent Activity
+                    </h4>
+                    
+                    <div class="log-container" id="activityLog">
+                        [14:30] System started<br>
+                        [14:32] WiFi scan completed<br>
+                        [14:35] Security report generated<br>
+                        [14:40] Password generated<br>
+                        [14:45] Settings updated<br>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <button class="btn btn-sm btn-outline-secondary" onclick="clearLogs()">
+                            <i class="fas fa-trash me-1"></i>Clear Logs
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Available Modal -->
+    <div class="modal fade" id="updateModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-download me-2"></i>Update Available
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="update-card mb-3">
+                        <h5>Version 2.1.0</h5>
+                        <p class="text-muted">New features and security improvements</p>
+                        <ul>
+                            <li>Enhanced WiFi scanning algorithms</li>
+                            <li>New security analysis tools</li>
+                            <li>Improved user interface</li>
+                            <li>Bug fixes and performance improvements</li>
+                        </ul>
+                    </div>
+                    <p class="text-muted small">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Size: ~15 MB | Estimated time: 2 minutes
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Later</button>
+                    <button type="button" class="btn btn-primary" onclick="installUpdate()">
+                        <i class="fas fa-download me-2"></i>Install Update
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="/static/js/app.js"></script>
+    
+    <script>
+        let settings = {};
+        let colorScheme = 'blue';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize tooltips
+            const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltips.forEach(tooltip => {
+                new bootstrap.Tooltip(tooltip);
+            });
+            
+            // Load saved settings
+            loadSettings();
+            
+            // Set initial values
+            updateStorageInfo();
+            updateSystemInfo();
+            
+            // Set up event listeners
+            document.getElementById('darkModeToggle').addEventListener('change', toggleDarkMode);
+        });
+        
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('appSettings');
+            if (savedSettings) {
+                try {
+                    settings = JSON.parse(savedSettings);
+                    applySettings();
+                } catch (e) {
+                    console.error('Failed to load settings:', e);
+                    settings = getDefaultSettings();
+                }
+            } else {
+                settings = getDefaultSettings();
+            }
+            
+            // Update UI with loaded settings
+            document.getElementById('darkModeToggle').checked = settings.darkMode || false;
+            document.getElementById('autoSaveToggle').checked = settings.autoSave !== false;
+            document.getElementById('notificationsToggle').checked = settings.notifications !== false;
+            document.getElementById('animationsToggle').checked = settings.animations !== false;
+            document.getElementById('sessionTimeout').value = settings.sessionTimeout || '30';
+            document.getElementById('passwordHistory').value = settings.passwordHistory || '10';
+            document.getElementById('encryptionLevel').value = settings.encryptionLevel || 'standard';
+            document.getElementById('clearDataToggle').checked = settings.clearDataOnExit || false;
+            document.getElementById('analyticsToggle').checked = settings.analytics !== false;
+            document.getElementById('webhookUrl').value = settings.webhookUrl || '';
+            
+            // Set color scheme
+            colorScheme = settings.colorScheme || 'blue';
+            selectColorScheme(colorScheme, false);
+        }
+        
+        function getDefaultSettings() {
+            return {
+                darkMode: false,
+                colorScheme: 'blue',
+                autoSave: true,
+                notifications: true,
+                animations: true,
+                sessionTimeout: '30',
+                passwordHistory: '10',
+                encryptionLevel: 'standard',
+                clearDataOnExit: false,
+                analytics: true,
+                webhookUrl: '',
+                apiKey: `ws_sk_${generateRandomString(32)}`,
+                lastUpdateCheck: new Date().toISOString()
+            };
+        }
+        
+        function applySettings() {
+            // Apply dark mode
+            if (settings.darkMode) {
+                document.body.setAttribute('data-bs-theme', 'dark');
+            } else {
+                document.body.setAttribute('data-bs-theme', 'light');
+            }
+            
+            // Apply color scheme
+            applyColorScheme(settings.colorScheme || 'blue');
+        }
+        
+        function toggleDarkMode() {
+            const isDarkMode = document.getElementById('darkModeToggle').checked;
+            settings.darkMode = isDarkMode;
+            
+            if (isDarkMode) {
+                document.body.setAttribute('data-bs-theme', 'dark');
+            } else {
+                document.body.setAttribute('data-bs-theme', 'light');
+            }
+            
+            saveSettings();
+            Utils.showNotification('Theme updated', 'info');
+        }
+        
+        function selectColorScheme(scheme, save = true) {
+            colorScheme = scheme;
+            
+            // Update UI
+            document.querySelectorAll('.color-scheme-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            event?.target.classList.add('active');
+            
+            // Apply scheme
+            applyColorScheme(scheme);
+            
+            if (save) {
+                settings.colorScheme = scheme;
+                saveSettings();
+                Utils.showNotification('Color scheme updated', 'info');
+            }
+        }
+        
+        function applyColorScheme(scheme) {
+            const colors = {
+                blue: { primary: '#4361ee', secondary: '#3a0ca3' },
+                green: { primary: '#198754', secondary: '#0ca678' },
+                orange: { primary: '#fd7e14', secondary: '#e8590c' },
+                purple: { primary: '#6f42c1', secondary: '#5a32a3' },
+                teal: { primary: '#20c997', secondary: '#0ca678' }
+            };
+            
+            const color = colors[scheme] || colors.blue;
+            
+            // Update CSS variables
+            document.documentElement.style.setProperty('--primary', color.primary);
+            document.documentElement.style.setProperty('--primary-dark', color.secondary);
+        }
+        
+        function saveSettings() {
+            // Gather current settings from UI
+            settings.darkMode = document.getElementById('darkModeToggle').checked;
+            settings.autoSave = document.getElementById('autoSaveToggle').checked;
+            settings.notifications = document.getElementById('notificationsToggle').checked;
+            settings.animations = document.getElementById('animationsToggle').checked;
+            settings.sessionTimeout = document.getElementById('sessionTimeout').value;
+            settings.passwordHistory = document.getElementById('passwordHistory').value;
+            settings.encryptionLevel = document.getElementById('encryptionLevel').value;
+            settings.clearDataOnExit = document.getElementById('clearDataToggle').checked;
+            settings.analytics = document.getElementById('analyticsToggle').checked;
+            settings.webhookUrl = document.getElementById('webhookUrl').value;
+            settings.colorScheme = colorScheme;
+            
+            // Save to localStorage
+            localStorage.setItem('appSettings', JSON.stringify(settings));
+            
+            // Also save to server in a real application
+            console.log('Settings saved:', settings);
+        }
+        
+        function saveAllSettings() {
+            saveSettings();
+            Utils.showNotification('All settings saved successfully', 'success');
+            
+            // Add to activity log
+            addToLog('Settings updated');
+        }
+        
+        function generateRandomString(length) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        function regenerateApiKey() {
+            if (confirm('Generate new API key? Old key will become invalid.')) {
+                const newKey = `ws_sk_${generateRandomString(32)}`;
+                settings.apiKey = newKey;
+                document.getElementById('apiKeyDisplay').textContent = newKey;
+                saveSettings();
+                addToLog('API key regenerated');
+                Utils.showNotification('New API key generated', 'success');
+            }
+        }
+        
+        function copyApiKey() {
+            const apiKey = document.getElementById('apiKeyDisplay').textContent;
+            Utils.copyToClipboard(apiKey);
+            Utils.showNotification('API key copied to clipboard', 'info');
+        }
+        
+        function updateStorageInfo() {
+            // Simulate storage usage
+            const scans = JSON.parse(localStorage.getItem('lastScanResults') || '[]');
+            const reports = JSON.parse(localStorage.getItem('securityReports') || '[]');
+            
+            document.getElementById('scanCount').textContent = scans.length || 0;
+            document.getElementById('reportCount').textContent = reports.length || 0;
+            
+            const totalItems = scans.length + reports.length;
+            const usagePercent = Math.min(totalItems * 5, 100); // Simulated calculation
+            
+            document.getElementById('storageProgress').style.width = usagePercent + '%';
+            document.getElementById('storageUsed').textContent = `${usagePercent} MB / 100 MB`;
+        }
+        
+        function updateSystemInfo() {
+            // Update last update check time
+            const lastCheck = settings.lastUpdateCheck ? 
+                new Date(settings.lastUpdateCheck).toLocaleDateString() : 'Never';
+            document.getElementById('lastUpdateCheck').textContent = lastCheck;
+        }
+        
+        function checkForUpdates() {
+            Utils.showNotification('Checking for updates...', 'info');
+            
+            // Simulate update check
+            setTimeout(() => {
+                // Randomly show update available (30% chance)
+                if (Math.random() < 0.3) {
+                    const modal = new bootstrap.Modal(document.getElementById('updateModal'));
+                    modal.show();
+                } else {
+                    Utils.showNotification('You have the latest version', 'success');
+                }
+                
+                // Update last check time
+                settings.lastUpdateCheck = new Date().toISOString();
+                saveSettings();
+                updateSystemInfo();
+                addToLog('Update check performed');
+            }, 1500);
+        }
+        
+        function installUpdate() {
+            Utils.showNotification('Installing update...', 'info');
+            
+            // Simulate update installation
+            setTimeout(() => {
+                bootstrap.Modal.getInstance(document.getElementById('updateModal')).hide();
+                Utils.showNotification('Update installed successfully!', 'success');
+                addToLog('System updated to v2.1.0');
+                
+                // Update version display
+                document.getElementById('appVersion').textContent = 'v2.1.0';
+            }, 3000);
+        }
+        
+        function createBackup() {
+            const backupData = {
+                version: '2.0.0',
+                timestamp: new Date().toISOString(),
+                scans: JSON.parse(localStorage.getItem('lastScanResults') || '[]'),
+                reports: JSON.parse(localStorage.getItem('securityReports') || '[]'),
+                passwords: JSON.parse(localStorage.getItem('passwordHistory') || '[]'),
+                education: JSON.parse(localStorage.getItem('educationProgress') || '{}'),
+                settings: settings
+            };
+            
+            const dataStr = JSON.stringify(backupData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const exportFileDefaultName = `wifi-security-backup-${new Date().getTime()}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            Utils.showNotification('Backup created successfully', 'success');
+            addToLog('Backup created');
+        }
+        
+        function restoreBackup() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = (event) => {
+                    try {
+                        const backupData = JSON.parse(event.target.result);
+                        
+                        // Validate backup
+                        if (backupData.version && backupData.timestamp) {
+                            if (confirm(`Restore backup from ${new Date(backupData.timestamp).toLocaleString()}?`)) {
+                                // Restore data
+                                if (backupData.scans) {
+                                    localStorage.setItem('lastScanResults', JSON.stringify(backupData.scans));
+                                }
+                                if (backupData.reports) {
+                                    localStorage.setItem('securityReports', JSON.stringify(backupData.reports));
+                                }
+                                if (backupData.passwords) {
+                                    localStorage.setItem('passwordHistory', JSON.stringify(backupData.passwords));
+                                }
+                                if (backupData.education) {
+                                    localStorage.setItem('educationProgress', JSON.stringify(backupData.education));
+                                }
+                                if (backupData.settings) {
+                                    settings = backupData.settings;
+                                    localStorage.setItem('appSettings', JSON.stringify(settings));
+                                    applySettings();
+                                    loadSettings(); // Reload to update UI
+                                }
+                                
+                                Utils.showNotification('Backup restored successfully', 'success');
+                                addToLog('Backup restored');
+                                updateStorageInfo();
+                            }
+                        } else {
+                            throw new Error('Invalid backup file');
+                        }
+                    } catch (error) {
+                        Utils.showNotification('Failed to restore backup: ' + error.message, 'error');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+        
+        function clearAllData() {
+            if (confirm('Permanently delete ALL data? This cannot be undone.')) {
+                // Clear all localStorage data
+                localStorage.clear();
+                
+                // Reset settings
+                settings = getDefaultSettings();
+                localStorage.setItem('appSettings', JSON.stringify(settings));
+                
+                // Reload settings
+                loadSettings();
+                updateStorageInfo();
+                
+                Utils.showNotification('All data cleared', 'warning');
+                addToLog('All data cleared');
+                
+                // Refresh the page after a delay
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            }
+        }
+        
+        function resetToDefaults() {
+            if (confirm('Reset all settings to default values?')) {
+                settings = getDefaultSettings();
+                localStorage.setItem('appSettings', JSON.stringify(settings));
+                loadSettings();
+                Utils.showNotification('Settings reset to defaults', 'warning');
+                addToLog('Settings reset to defaults');
+            }
+        }
+        
+        function exportLogs() {
+            const logs = document.getElementById('activityLog').textContent;
+            const dataUri = 'data:text/plain;charset=utf-8,'+ encodeURIComponent(logs);
+            const exportFileDefaultName = `wifi-security-logs-${new Date().getTime()}.txt`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            Utils.showNotification('Logs exported', 'info');
+            addToLog('Logs exported');
+        }
+        
+        function clearLogs() {
+            if (confirm('Clear all activity logs?')) {
+                document.getElementById('activityLog').innerHTML = '';
+                addToLog('Logs cleared');
+            }
+        }
+        
+        function addToLog(message) {
+            const logContainer = document.getElementById('activityLog');
+            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const logEntry = `[${timestamp}] ${message}`;
+            
+            logContainer.innerHTML = logEntry + '<br>' + logContainer.innerHTML;
+            
+            // Keep only last 10 entries
+            const entries = logContainer.innerHTML.split('<br>').filter(entry => entry.trim());
+            if (entries.length > 10) {
+                logContainer.innerHTML = entries.slice(0, 10).join('<br>');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Scanner - WiFi Security Educator</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+    <style>
+        .scan-header {
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: white;
+            padding: 2rem 0;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+        }
+        
+        .scan-controls {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+        }
+        
+        .scan-progress {
+            height: 8px;
+            border-radius: 4px;
+            background: #e9ecef;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .scan-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4361ee, #3a0ca3);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .network-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .scan-result-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--primary);
+            transition: var(--transition-normal);
+        }
+        
+        .scan-result-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .scan-result-card.encrypted {
+            border-left-color: var(--success);
+        }
+        
+        .scan-result-card.unencrypted {
+            border-left-color: var(--danger);
+        }
+        
+        .signal-visual {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 30px;
+        }
+        
+        .signal-bar {
+            width: 6px;
+            border-radius: 3px;
+            background: #dee2e6;
+        }
+        
+        .signal-bar.active {
+            background: #198754;
+        }
+        
+        .scan-animation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 2rem;
+        }
+        
+        .radar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 2px solid #4361ee;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .radar::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid rgba(67, 97, 238, 0.3);
+            top: -2px;
+            left: -2px;
+        }
+        
+        .radar::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            background: linear-gradient(45deg, transparent, rgba(67, 97, 238, 0.3), transparent);
+            top: 0;
+            left: 0;
+            animation: radar-scan 2s linear infinite;
+            transform-origin: bottom right;
+        }
+        
+        @keyframes radar-scan {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .network-dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: pulse 2s infinite;
+        }
+        
+        .filter-badges .badge {
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .filter-badges .badge:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-shield-alt"></i>
+                <span>WiFi Security Educator</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">
+                            <i class="fas fa-dashboard"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/scan">
+                            <i class="fas fa-wifi"></i> Scan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/analyze">
+                            <i class="fas fa-search"></i> Analyze
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/generate">
+                            <i class="fas fa-key"></i> Generate
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/education">
+                            <i class="fas fa-graduation-cap"></i> Learn
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/settings">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="scan-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-5 fw-bold">
+                        <i class="fas fa-satellite-dish"></i> Network Scanner
+                    </h1>
+                    <p class="lead mb-0">
+                        Discover and analyze nearby WiFi networks for security assessment
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="d-flex align-items-center justify-content-md-end gap-2">
+                        <span class="badge bg-success">
+                            <i class="fas fa-circle"></i> Ready
+                        </span>
+                        <small class="text-white-50">Interface: wlan0</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scan Controls -->
+        <div class="scan-controls">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h5 class="mb-3">
+                        <i class="fas fa-sliders-h me-2"></i>Scan Settings
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label">Scan Mode</label>
+                            <select class="form-select" id="scanMode">
+                                <option value="normal" selected>Normal Scan</option>
+                                <option value="deep">Deep Scan</option>
+                                <option value="stealth">Stealth Scan</option>
+                                <option value="continuous">Continuous</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label">Channel</label>
+                            <select class="form-select" id="scanChannel">
+                                <option value="all" selected>All Channels</option>
+                                <option value="2.4">2.4 GHz Only</option>
+                                <option value="5">5 GHz Only</option>
+                                <option value="6">Channel 6</option>
+                                <option value="11">Channel 11</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center">
+                    <button id="scanBtn" class="btn btn-primary btn-lg px-5 py-3" onclick="startScan()">
+                        <i class="fas fa-wifi me-2"></i>
+                        <span id="scanBtnText">Start WiFi Scan</span>
+                    </button>
+                    <div class="mt-3">
+                        <button id="stopScanBtn" class="btn btn-outline-danger btn-sm" disabled onclick="stopScan()">
+                            <i class="fas fa-stop"></i> Stop Scan
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm ms-2" onclick="clearResults()">
+                            <i class="fas fa-trash"></i> Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="mt-4">
+                <div class="d-flex justify-content-between mb-2">
+                    <small>Scan Progress</small>
+                    <small id="progressText">0%</small>
+                </div>
+                <div class="scan-progress">
+                    <div class="scan-progress-bar" id="scanProgress"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title mb-3">
+                            <i class="fas fa-filter me-2"></i>Filter Networks
+                        </h6>
+                        <div class="filter-badges">
+                            <span class="badge bg-primary me-2 mb-2" onclick="filterNetworks('all')">All</span>
+                            <span class="badge bg-success me-2 mb-2" onclick="filterNetworks('encrypted')">Encrypted</span>
+                            <span class="badge bg-danger me-2 mb-2" onclick="filterNetworks('open')">Open</span>
+                            <span class="badge bg-warning me-2 mb-2" onclick="filterNetworks('weak')">Weak Signal</span>
+                            <span class="badge bg-info me-2 mb-2" onclick="filterNetworks('strong')">Strong Signal</span>
+                            <span class="badge bg-dark me-2 mb-2" onclick="filterNetworks('wpa3')">WPA3</span>
+                            <span class="badge bg-secondary me-2 mb-2" onclick="filterNetworks('wpa2')">WPA2</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scan Results -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-list me-2"></i>Discovered Networks
+                                <span class="badge bg-primary ms-2" id="networkCount">0</span>
+                            </h5>
+                            <div>
+                                <small class="text-muted">Last scan: <span id="lastScanTime">Never</span></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Scan Animation -->
+                        <div id="scanAnimation" class="scan-animation" style="display: none;">
+                            <div class="radar">
+                                <div class="network-dot" style="top: 30%; left: 40%; animation-delay: 0s;"></div>
+                                <div class="network-dot" style="top: 60%; left: 70%; animation-delay: 0.5s; background: var(--success);"></div>
+                                <div class="network-dot" style="top: 40%; left: 20%; animation-delay: 1s; background: var(--warning);"></div>
+                                <div class="network-dot" style="top: 20%; left: 80%; animation-delay: 1.5s; background: var(--danger);"></div>
+                            </div>
+                            <div class="text-center">
+                                <h5>Scanning for Networks...</h5>
+                                <p class="text-muted">Searching for WiFi signals in your area</p>
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Results Container -->
+                        <div id="scanResults" class="network-list">
+                            <div class="text-center py-5">
+                                <i class="fas fa-wifi fa-3x text-muted mb-3"></i>
+                                <h5>No Networks Scanned Yet</h5>
+                                <p class="text-muted">
+                                    Click "Start WiFi Scan" to discover nearby networks
+                                </p>
+                                <button class="btn btn-primary" onclick="startScan()">
+                                    <i class="fas fa-play me-2"></i>Start First Scan
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Network Details Modal -->
+                        <div class="modal fade" id="networkDetailsModal" tabindex="-1">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Network Details</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body" id="networkDetailsContent">
+                                        <!-- Content loaded dynamically -->
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary" onclick="analyzeSelectedNetwork()">
+                                            <i class="fas fa-search"></i> Analyze Security
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Scan Statistics -->
+                    <div class="card-footer">
+                        <div class="row text-center">
+                            <div class="col-md-3">
+                                <small class="text-muted">Duration</small>
+                                <div class="fw-bold" id="scanDuration">0s</div>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">Networks Found</small>
+                                <div class="fw-bold" id="totalNetworksFound">0</div>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">Secure</small>
+                                <div class="fw-bold text-success" id="secureNetworksCount">0</div>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">Open</small>
+                                <div class="fw-bold text-danger" id="openNetworksCount">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Tips -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-lightbulb me-2"></i>Scanning Tips</h6>
+                    <ul class="mb-0">
+                        <li>Scan in different locations to get comprehensive coverage</li>
+                        <li>Use "Deep Scan" mode for more detailed information</li>
+                        <li>Regular scanning helps monitor network security changes</li>
+                        <li>Always have permission before scanning networks you don't own</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="/static/js/app.js"></script>
+    
+    <script>
+        let isScanning = false;
+        let scanInterval;
+        let currentProgress = 0;
+        let selectedNetworkId = null;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for previous scan results
+            const savedResults = localStorage.getItem('lastScanResults');
+            if (savedResults) {
+                try {
+                    const results = JSON.parse(savedResults);
+                    displayScanResults(results);
+                } catch (e) {
+                    console.error('Failed to load saved results:', e);
+                }
+            }
+        });
+        
+        function startScan() {
+            if (isScanning) return;
+            
+            isScanning = true;
+            currentProgress = 0;
+            
+            // Update UI
+            document.getElementById('scanBtn').disabled = true;
+            document.getElementById('scanBtnText').innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Scanning...';
+            document.getElementById('stopScanBtn').disabled = false;
+            document.getElementById('scanAnimation').style.display = 'flex';
+            document.getElementById('scanResults').innerHTML = '';
+            
+            // Start progress animation
+            scanInterval = setInterval(updateProgress, 100);
+            
+            // Simulate scan completion after 3-5 seconds
+            const scanTime = 3000 + Math.random() * 2000;
+            setTimeout(() => {
+                completeScan();
+            }, scanTime);
+            
+            Utils.showNotification('Scan started...', 'info');
+        }
+        
+        function updateProgress() {
+            if (currentProgress >= 100) {
+                clearInterval(scanInterval);
+                return;
+            }
+            
+            currentProgress += 2;
+            if (currentProgress > 100) currentProgress = 100;
+            
+            document.getElementById('scanProgress').style.width = currentProgress + '%';
+            document.getElementById('progressText').textContent = currentProgress + '%';
+        }
+        
+        function completeScan() {
+            clearInterval(scanInterval);
+            currentProgress = 100;
+            document.getElementById('scanProgress').style.width = '100%';
+            document.getElementById('progressText').textContent = '100%';
+            
+            // Simulate scan results
+            const mockResults = {
+                scan_id: Date.now(),
+                timestamp: new Date().toISOString(),
+                networks_found: 3 + Math.floor(Math.random() * 5),
+                duration_ms: 2500 + Math.random() * 2000,
+                networks: generateMockNetworks()
+            };
+            
+            // Display results
+            displayScanResults(mockResults);
+            
+            // Save to localStorage
+            localStorage.setItem('lastScanResults', JSON.stringify(mockResults));
+            localStorage.setItem('lastScanTime', new Date().toLocaleString());
+            
+            // Update UI
+            isScanning = false;
+            document.getElementById('scanBtn').disabled = false;
+            document.getElementById('scanBtnText').innerHTML = '<i class="fas fa-wifi"></i> Start WiFi Scan';
+            document.getElementById('stopScanBtn').disabled = true;
+            document.getElementById('scanAnimation').style.display = 'none';
+            document.getElementById('lastScanTime').textContent = 'Just now';
+            
+            Utils.showNotification(`Found ${mockResults.networks_found} networks!`, 'success');
+        }
+        
+        function stopScan() {
+            if (!isScanning) return;
+            
+            clearInterval(scanInterval);
+            isScanning = false;
+            
+            document.getElementById('scanBtn').disabled = false;
+            document.getElementById('scanBtnText').innerHTML = '<i class="fas fa-wifi"></i> Start WiFi Scan';
+            document.getElementById('stopScanBtn').disabled = true;
+            document.getElementById('scanAnimation').style.display = 'none';
+            
+            Utils.showNotification('Scan stopped', 'warning');
+        }
+        
+        function generateMockNetworks() {
+            const networks = [];
+            const networkCount = 3 + Math.floor(Math.random() * 5);
+            const ssidPrefixes = ['Home', 'Office', 'Public', 'Guest', 'IoT', 'Secure', 'Free', 'Mobile', 'Hotspot'];
+            const vendors = ['TP-Link', 'ASUS', 'Netgear', 'Linksys', 'D-Link', 'Google', 'Apple', 'Xiaomi'];
+            
+            for (let i = 0; i < networkCount; i++) {
+                const isEncrypted = Math.random() > 0.3;
+                const signal = -40 - Math.random() * 50;
+                
+                networks.push({
+                    id: i + 1,
+                    ssid: `${ssidPrefixes[Math.floor(Math.random() * ssidPrefixes.length)]}_${Math.floor(Math.random() * 100)}`,
+                    bssid: `${pad(Math.floor(Math.random() * 255))}:${pad(Math.floor(Math.random() * 255))}:${pad(Math.floor(Math.random() * 255))}:${pad(Math.floor(Math.random() * 255))}:${pad(Math.floor(Math.random() * 255))}:${pad(Math.floor(Math.random() * 255))}`,
+                    channel: Math.random() > 0.5 ? Math.floor(Math.random() * 11) + 1 : [36, 40, 44, 48, 149, 153, 157][Math.floor(Math.random() * 7)],
+                    signal: signal,
+                    encryption: isEncrypted ? (Math.random() > 0.7 ? 'WPA3' : 'WPA2') : 'OPEN',
+                    security_score: isEncrypted ? Math.floor(Math.random() * 30) + 70 : Math.floor(Math.random() * 30) + 10,
+                    vendor: vendors[Math.floor(Math.random() * vendors.length)],
+                    frequency: Math.random() > 0.5 ? '2.4 GHz' : '5 GHz'
+                });
+            }
+            
+            return networks;
+        }
+        
+        function pad(num) {
+            return num.toString(16).padStart(2, '0').toUpperCase();
+        }
+        
+        function displayScanResults(scanData) {
+            const container = document.getElementById('scanResults');
+            const networkCount = document.getElementById('networkCount');
+            const scanDuration = document.getElementById('scanDuration');
+            const totalNetworksFound = document.getElementById('totalNetworksFound');
+            const secureNetworksCount = document.getElementById('secureNetworksCount');
+            const openNetworksCount = document.getElementById('openNetworksCount');
+            
+            // Update stats
+            networkCount.textContent = scanData.networks_found;
+            scanDuration.textContent = (scanData.duration_ms / 1000).toFixed(1) + 's';
+            totalNetworksFound.textContent = scanData.networks_found;
+            
+            const secureCount = scanData.networks.filter(n => n.encryption !== 'OPEN').length;
+            const openCount = scanData.networks.length - secureCount;
+            
+            secureNetworksCount.textContent = secureCount;
+            openNetworksCount.textContent = openCount;
+            
+            // Display networks
+            let html = '';
+            scanData.networks.forEach(network => {
+                const signal = Utils.formatSignalStrength(network.signal);
+                const security = Utils.formatSecurityScore(network.security_score);
+                const isEncrypted = network.encryption !== 'OPEN';
+                
+                html += `
+                    <div class="scan-result-card ${isEncrypted ? 'encrypted' : 'unencrypted'}">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <div class="signal-visual">
+                                            ${Array(5).fill().map((_, i) => `
+                                                <div class="signal-bar ${i < signal.bars ? 'active' : ''}" 
+                                                     style="height: ${(i+1)*4 + 8}px"></div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">${network.ssid}</h6>
+                                        <small class="text-muted">${network.bssid}</small>
+                                        <div class="mt-1">
+                                            <span class="badge ${isEncrypted ? 'bg-success' : 'bg-danger'} me-2">
+                                                ${network.encryption}
+                                            </span>
+                                            <span class="badge ${security.class}">
+                                                ${security.level}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <div class="d-flex flex-column">
+                                    <div class="mb-2">
+                                        <small class="text-muted">Ch ${network.channel} • ${network.frequency}</small><br>
+                                        <small class="text-muted">${network.signal} dBm • ${signal.level}</small>
+                                    </div>
+                                    <div class="d-flex gap-2 justify-content-md-end">
+                                        <button class="btn btn-sm btn-outline-primary" 
+                                                onclick="viewNetworkDetails(${network.id})">
+                                            <i class="fas fa-info-circle"></i> Details
+                                        </button>
+                                        <button class="btn btn-sm btn-primary" 
+                                                onclick="analyzeNetwork(${network.id})">
+                                            <i class="fas fa-search"></i> Analyze
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function viewNetworkDetails(networkId) {
+            selectedNetworkId = networkId;
+            
+            // For demo, show mock details
+            const detailsContent = document.getElementById('networkDetailsContent');
+            detailsContent.innerHTML = `
+                <div class="network-details">
+                    <h6>Network Details</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>SSID:</strong> Network_${networkId}</p>
+                            <p><strong>BSSID:</strong> AA:BB:CC:DD:EE:FF</p>
+                            <p><strong>Channel:</strong> ${Math.floor(Math.random() * 11) + 1}</p>
+                            <p><strong>Frequency:</strong> ${Math.random() > 0.5 ? '2.4 GHz' : '5 GHz'}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Signal:</strong> -${45 + networkId * 5} dBm (Good)</p>
+                            <p><strong>Encryption:</strong> ${networkId % 3 === 0 ? 'WPA3' : 'WPA2'}</p>
+                            <p><strong>Vendor:</strong> ${['TP-Link', 'ASUS', 'Netgear'][networkId % 3]}</p>
+                            <p><strong>Security Score:</strong> ${70 + networkId * 5}/100</p>
+                        </div>
+                    </div>
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-info-circle"></i>
+                        This network appears to be ${networkId % 3 === 0 ? 'very secure' : 'moderately secure'}.
+                    </div>
+                </div>
+            `;
+            
+            const modal = new bootstrap.Modal(document.getElementById('networkDetailsModal'));
+            modal.show();
+        }
+        
+        function analyzeNetwork(networkId) {
+            AnalysisModule.analyzeNetwork(networkId);
+        }
+        
+        function analyzeSelectedNetwork() {
+            if (selectedNetworkId) {
+                analyzeNetwork(selectedNetworkId);
+                bootstrap.Modal.getInstance(document.getElementById('networkDetailsModal')).hide();
+            }
+        }
+        
+        function filterNetworks(filter) {
+            const cards = document.querySelectorAll('.scan-result-card');
+            cards.forEach(card => {
+                let show = true;
+                
+                switch(filter) {
+                    case 'encrypted':
+                        show = card.classList.contains('encrypted');
+                        break;
+                    case 'open':
+                        show = card.classList.contains('unencrypted');
+                        break;
+                    case 'weak':
+                        // Check signal strength in card text
+                        const signalText = card.textContent;
+                        show = signalText.includes('Weak') || signalText.includes('Poor');
+                        break;
+                    case 'strong':
+                        const strongText = card.textContent;
+                        show = strongText.includes('Excellent') || strongText.includes('Good');
+                        break;
+                    case 'wpa3':
+                        show = card.textContent.includes('WPA3');
+                        break;
+                    case 'wpa2':
+                        show = card.textContent.includes('WPA2');
+                        break;
+                    // 'all' shows all
+                }
+                
+                card.style.display = show ? 'block' : 'none';
+            });
+            
+            Utils.showNotification(`Filtered by: ${filter}`, 'info');
+        }
+        
+        function clearResults() {
+            if (confirm('Clear all scan results?')) {
+                localStorage.removeItem('lastScanResults');
+                document.getElementById('scanResults').innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-wifi fa-3x text-muted mb-3"></i>
+                        <h5>No Networks Scanned Yet</h5>
+                        <p class="text-muted">
+                            Click "Start WiFi Scan" to discover nearby networks
+                        </p>
+                    </div>
+                `;
+                
+                // Reset stats
+                document.getElementById('networkCount').textContent = '0';
+                document.getElementById('scanDuration').textContent = '0s';
+                document.getElementById('totalNetworksFound').textContent = '0';
+                document.getElementById('secureNetworksCount').textContent = '0';
+                document.getElementById('openNetworksCount').textContent = '0';
+                document.getElementById('lastScanTime').textContent = 'Never';
+                
+                Utils.showNotification('Results cleared', 'warning');
+            }
+        }
+        
+        // Make functions available globally
+        window.startScan = startScan;
+        window.stopScan = stopScan;
+        window.clearResults = clearResults;
+        window.viewNetworkDetails = viewNetworkDetails;
+        window.analyzeNetwork = analyzeNetwork;
+        window.filterNetworks = filterNetworks;
+    </script>
+</body>
+</html>
