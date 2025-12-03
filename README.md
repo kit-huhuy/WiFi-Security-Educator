@@ -37,6 +37,7 @@ WiFi Security Educator is a comprehensive web application designed to teach user
 ```bash
 # 1. Clone 
 git clone https://github.com/kit-huhuy/WiFi-Security-Educator
+cd WiFi-Security-Educator
 cd webui
 
 # 2. Install dependencies
