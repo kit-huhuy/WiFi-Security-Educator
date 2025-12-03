@@ -45,8 +45,8 @@ pip install flask colorama
 # 2. Run the web application
 python main.py
 ```
-**🖥️ Usage
-Web Interface**
+## **🖥️ Usage
+**Web Interface**
 1 Start the Flask server:
 ```bash
 python main.py
@@ -61,7 +61,7 @@ Local: http://127.0.0.1:5000
 
 Network: http://[YOUR_IP]:5000
 ```
-**📱 Platform Support**
+## **📱 Platform Support**
 ✅ Termux (Android)
 ```bash
 # Install required packages
@@ -92,75 +92,75 @@ pip install flask colorama
 python main.py
 ```
 
-**📊 Features in Detail**
+## **📊 Features in Detail**
 
 **1. Network Scanner**
 
-Simulates WiFi network discovery
+- Simulates WiFi network discovery
 
-Shows SSID, BSSID, signal strength
+- Shows SSID, BSSID, signal strength
 
-Identifies encryption types (WEP, WPA, WPA2, WPA3)
+- Identifies encryption types (WEP, WPA, WPA2, WPA3)
 
-Calculates security scores
+- Calculates security scores
 
 **2. Security Analysis**
 
-Deep vulnerability assessment
+- Deep vulnerability assessment
 
-Encryption strength analysis
+- Encryption strength analysis
 
-Signal security evaluation
+- Signal security evaluation
 
-Threat level classification
+- Threat level classification
 
-Custom recommendations
+- Custom recommendations
 
 **3. Password Generator**
 
-Configurable length (8-32 characters)
+- Configurable length (8-32 characters)
 
-Multiple character sets
+- Multiple character sets
 
-Strength meter
+- Strength meter
 
-Hash generation (MD5, SHA256)
+- Hash generation (MD5, SHA256)
 
-Password history
+- Password history
 
 **4. Education Center**
 
-Interactive lessons
+- Interactive lessons
 
-Security glossary
+- Security glossary
 
-Knowledge quizzes
+- Knowledge quizzes
 
-Achievement system
+- Achievement system
 
-Progress tracking
+- Progress tracking
 
 **5. Reporting System**
 
-Detailed security reports
+- Detailed security reports
 
-Export to JSON/PDF
+- Export to JSON/PDF
 
-Historical data
+- Historical data
 
-Comparative analysis
+- Comparative analysis
 
 **🛡️ Security & Privacy**
 
-Data Handling
+- Data Handling
 
-All data stored locally
+- All data stored locally
 
-No internet connectivity required
+- No internet connectivity required
 
-Encrypted data storage
+- Encrypted data storage
 
-Automatic backup system
+- Automatic backup system
 
 **Legal Compliance**
 
