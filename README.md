@@ -37,19 +37,19 @@ WiFi Security Educator is a comprehensive web application designed to teach user
 ```bash
 # 1. Clone 
 git clone https://github.com/kit-huhuy/WiFi-Security-Educator
-cd wifi_security
+cd webui
 
 # 2. Install dependencies
 pip install flask colorama
 
 # 2. Run the web application
-python main.py
+python app.py
 ```
 ## **🖥️ Usage
 **Web Interface**
 1 Start the Flask server:
 ```bash
-python main.py
+python app.py
 ```
 2 Open your browser and navigate to:
 ```bash
@@ -69,7 +69,7 @@ pkg install python python-pip
 pip install flask colorama
 
 # Run the application
-python main.py
+python app.py
 ```
 **✅ Linux/Mac**
 ```bash
@@ -80,7 +80,7 @@ sudo apt install python3 python3-pip  # Ubuntu/Debian
 pip3 install flask colorama
 
 # Run the application
-python3 main.py
+python3 app.py
 ```
 **✅ Windows**
 ```bash
@@ -89,7 +89,7 @@ python3 main.py
 # Open Command Prompt or PowerShell
 
 pip install flask colorama
-python main.py
+python app.py
 ```
 
 ## **📊 Features in Detail**
