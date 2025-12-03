@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Analysis - WiFi Security Educator</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+    <style>
+        .analysis-header {
+            background: linear-gradient(135deg, #20c997 0%, #198754 100%);
+            color: white;
+            padding: 2rem 0;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+        }
+        
+        .security-meter {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .meter-circle {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+        
+        .meter-fill {
+            transform: rotate(-90deg);
+        }
+        
+        .meter-score {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+        
+        .vulnerability-card {
+            border-left: 4px solid;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            background: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-normal);
+        }
+        
+        .vulnerability-card:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .vulnerability-card.critical { border-left-color: #dc3545; }
+        .vulnerability-card.high { border-left-color: #fd7e14; }
+        .vulnerability-card.medium { border-left-color: #ffc107; }
+        .vulnerability-card.low { border-left-color: #0dcaf0; }
+        .vulnerability-card.info { border-left-color: #6c757d; }
+        
+        .check-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .check-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .check-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .check-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+        
+        .check-icon.pass { background: rgba(25, 135, 84, 0.1); color: #198754; }
+        .check-icon.fail { background: rgba(220, 53, 69, 0.1); color: #dc3545; }
+        .check-icon.warning { background: rgba(255, 193, 7, 0.1); color: #ffc107; }
+        
+        .recommendation-card {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), rgba(58, 12, 163, 0.05));
+            border: 1px solid rgba(67, 97, 238, 0.2);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .threat-level {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .threat-level.critical { background: #dc3545; color: white; }
+        .threat-level.high { background: #fd7e14; color: white; }
+        .threat-level.medium { background: #ffc107; color: black; }
+        .threat-level.low { background: #198754; color: white; }
+        
+        .compare-table th {
+            background: var(--light);
+            font-weight: 600;
+        }
+        
+        .analysis-summary {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-shield-alt"></i>
+                <span>WiFi Security Educator</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">
+                            <i class="fas fa-dashboard"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/scan">
+                            <i class="fas fa-wifi"></i> Scan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/analyze">
+                            <i class="fas fa-search"></i> Analyze
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/generate">
+                            <i class="fas fa-key"></i> Generate
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/education">
+                            <i class="fas fa-graduation-cap"></i> Learn
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/settings">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="analysis-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-5 fw-bold">
+                        <i class="fas fa-search"></i> Security Analysis
+                    </h1>
+                    <p class="lead mb-0">
+                        Deep analysis of WiFi network security vulnerabilities and recommendations
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <button class="btn btn-light" onclick="runNewAnalysis()">
+                        <i class="fas fa-sync-alt me-2"></i>New Analysis
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Select Network -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">
+                            <i class="fas fa-wifi me-2"></i>Select Network for Analysis
+                        </h5>
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <select class="form-select" id="networkSelect">
+                                    <option value="">-- Select a scanned network --</option>
+                                    <option value="1">Home-Network-5G (WPA2 - 85% Secure)</option>
+                                    <option value="2">Public-Free-WiFi (OPEN - 25% Risky)</option>
+                                    <option value="3">Office_Network (WPA3 - 95% Very Secure)</option>
+                                    <option value="4">NETGEAR23 (WPA2 - 78% Secure)</option>
+                                    <option value="5">Guest-WiFi (WPA2 - 65% Moderate)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-primary w-100" onclick="analyzeSelectedNetwork()" id="analyzeBtn">
+                                    <i class="fas fa-search me-2"></i>Analyze Network
+                                </button>
+                            </div>
+                        </div>
+                        <small class="text-muted mt-2 d-block">
+                            Or <a href="/scan" class="text-decoration-none">scan for networks</a> first
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Results -->
+        <div id="analysisResults">
+            <!-- Default empty state -->
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-search fa-3x text-muted"></i>
+                </div>
+                <h4>No Analysis Yet</h4>
+                <p class="text-muted mb-4">
+                    Select a network from the dropdown above to start security analysis
+                </p>
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6>What security analysis includes:</h6>
+                                <div class="row text-start">
+                                    <div class="col-md-6">
+                                        <ul class="check-list">
+                                            <li><i class="fas fa-check text-success me-2"></i> Encryption strength</li>
+                                            <li><i class="fas fa-check text-success me-2"></i> Password security</li>
+                                            <li><i class="fas fa-check text-success me-2"></i> Signal security</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <ul class="check-list">
+                                            <li><i class="fas fa-check text-success me-2"></i> Vulnerability scan</li>
+                                            <li><i class="fas fa-check text-success me-2"></i> Configuration audit</li>
+                                            <li><i class="fas fa-check text-success me-2"></i> Best practices check</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Modal -->
+        <div class="modal fade" id="analysisModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-search me-2"></i>Security Analysis
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="analysisModalBody">
+                        <!-- Content loaded dynamically -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="saveAnalysis()">
+                            <i class="fas fa-save me-2"></i>Save Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="/static/js/app.js"></script>
+    
+    <script>
+        let currentAnalysis = null;
+        let meterChart = null;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for saved analysis
+            const savedAnalysis = localStorage.getItem('lastAnalysis');
+            if (savedAnalysis) {
+                try {
+                    const analysis = JSON.parse(savedAnalysis);
+                    displayAnalysis(analysis);
+                } catch (e) {
+                    console.error('Failed to load saved analysis:', e);
+                }
+            }
+        });
+        
+        function analyzeSelectedNetwork() {
+            const networkId = document.getElementById('networkSelect').value;
+            if (!networkId) {
+                Utils.showNotification('Please select a network first', 'warning');
+                return;
+            }
+            
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            analyzeBtn.disabled = true;
+            analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing...';
+            
+            // Show analysis in modal
+            const modal = new bootstrap.Modal(document.getElementById('analysisModal'));
+            const modalBody = document.getElementById('analysisModalBody');
+            
+            Utils.showLoading(modalBody, 'Analyzing network security...');
+            modal.show();
+            
+            // Simulate analysis delay
+            setTimeout(() => {
+                const analysis = generateAnalysis(networkId);
+                currentAnalysis = analysis;
+                
+                displayAnalysisInModal(analysis);
+                
+                // Also update main page
+                displayAnalysis(analysis);
+                
+                // Save to localStorage
+                localStorage.setItem('lastAnalysis', JSON.stringify(analysis));
+                
+                analyzeBtn.disabled = false;
+                analyzeBtn.innerHTML = '<i class="fas fa-search me-2"></i>Analyze Network';
+                
+                Utils.showNotification('Analysis complete!', 'success');
+            }, 1500);
+        }
+        
+        function generateAnalysis(networkId) {
+            const networkData = {
+                1: { ssid: 'Home-Network-5G', encryption: 'WPA2', security_score: 85 },
+                2: { ssid: 'Public-Free-WiFi', encryption: 'OPEN', security_score: 25 },
+                3: { ssid: 'Office_Network', encryption: 'WPA3', security_score: 95 },
+                4: { ssid: 'NETGEAR23', encryption: 'WPA2', security_score: 78 },
+                5: { ssid: 'Guest-WiFi', encryption: 'WPA2', security_score: 65 }
+            };
+            
+            const network = networkData[networkId] || networkData[1];
+            
+            return {
+                network: network,
+                timestamp: new Date().toISOString(),
+                checks: [
+                    { name: 'Encryption Strength', status: network.encryption === 'WPA3' ? 'PASS' : network.encryption === 'WPA2' ? 'PASS' : 'FAIL', weight: 30 },
+                    { name: 'Password Complexity', status: Math.random() > 0.3 ? 'PASS' : 'WARNING', weight: 25 },
+                    { name: 'WPS Status', status: Math.random() > 0.7 ? 'FAIL' : 'PASS', weight: 15 },
+                    { name: 'Signal Encryption', status: 'PASS', weight: 10 },
+                    { name: 'Firmware Updates', status: Math.random() > 0.5 ? 'WARNING' : 'PASS', weight: 10 },
+                    { name: 'Default Credentials', status: Math.random() > 0.8 ? 'FAIL' : 'PASS', weight: 10 }
+                ],
+                vulnerabilities: generateVulnerabilities(network),
+                recommendations: [
+                    'Enable WPA3 encryption if supported',
+                    'Use a strong password with 12+ characters',
+                    'Disable WPS (Wi-Fi Protected Setup)',
+                    'Update router firmware to latest version',
+                    'Change default administrator credentials',
+                    'Enable network firewall',
+                    'Disable remote administration'
+                ],
+                threat_level: network.security_score >= 80 ? 'LOW' : 
+                             network.security_score >= 60 ? 'MEDIUM' : 
+                             network.security_score >= 40 ? 'HIGH' : 'CRITICAL'
+            };
+        }
+        
+        function generateVulnerabilities(network) {
+            const vulnerabilities = [];
+            
+            if (network.encryption === 'OPEN') {
+                vulnerabilities.push({
+                    title: 'No Encryption',
+                    severity: 'CRITICAL',
+                    description: 'Network traffic is transmitted in plain text',
+                    impact: 'Data interception and eavesdropping'
+                });
+            }
+            
+            if (network.security_score < 70) {
+                vulnerabilities.push({
+                    title: 'Weak Security Configuration',
+                    severity: 'HIGH',
+                    description: 'Insufficient security measures in place',
+                    impact: 'Increased risk of unauthorized access'
+                });
+            }
+            
+            if (Math.random() > 0.5) {
+                vulnerabilities.push({
+                    title: 'WPS Enabled',
+                    severity: 'MEDIUM',
+                    description: 'Wi-Fi Protected Setup is active',
+                    impact: 'Potential brute-force attacks'
+                });
+            }
+            
+            if (Math.random() > 0.7) {
+                vulnerabilities.push({
+                    title: 'Outdated Firmware',
+                    severity: 'MEDIUM',
+                    description: 'Router firmware is not up to date',
+                    impact: 'Known security vulnerabilities'
+                });
+            }
+            
+            return vulnerabilities;
+        }
+        
+        function displayAnalysisInModal(analysis) {
+            const modalBody = document.getElementById('analysisModalBody');
+            const network = analysis.network;
+            
+            let checksHtml = '';
+            analysis.checks.forEach(check => {
+                const iconClass = check.status === 'PASS' ? 'fa-check-circle text-success' :
+                                check.status === 'FAIL' ? 'fa-times-circle text-danger' :
+                                'fa-exclamation-triangle text-warning';
+                
+                checksHtml += `
+                    <li>
+                        <div class="check-icon ${check.status.toLowerCase()}">
+                            <i class="fas ${iconClass}"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <strong>${check.name}</strong>
+                            <div class="small text-muted">Weight: ${check.weight} points</div>
+                        </div>
+                        <div>
+                            <span class="badge bg-${check.status === 'PASS' ? 'success' : check.status === 'FAIL' ? 'danger' : 'warning'}">
+                                ${check.status}
+                            </span>
+                        </div>
+                    </li>
+                `;
+            });
+            
+            let vulnHtml = '';
+            analysis.vulnerabilities.forEach(vuln => {
+                vulnHtml += `
+                    <div class="vulnerability-card ${vuln.severity.toLowerCase()}">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="mb-0">${vuln.title}</h6>
+                            <span class="badge bg-${vuln.severity === 'CRITICAL' ? 'danger' : 
+                                                    vuln.severity === 'HIGH' ? 'danger' : 
+                                                    vuln.severity === 'MEDIUM' ? 'warning' : 'info'}">
+                                ${vuln.severity}
+                            </span>
+                        </div>
+                        <p class="mb-1">${vuln.description}</p>
+                        <small class="text-muted"><strong>Impact:</strong> ${vuln.impact}</small>
+                    </div>
+                `;
+            });
+            
+            let recHtml = '';
+            analysis.recommendations.forEach((rec, index) => {
+                recHtml += `
+                    <div class="recommendation-card">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-primary me-3">${index + 1}</span>
+                            <div>${rec}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            modalBody.innerHTML = `
+                <div class="analysis-details">
+                    <div class="analysis-summary">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h4>${network.ssid}</h4>
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="badge ${network.encryption === 'WPA3' ? 'bg-success' : 
+                                                       network.encryption === 'WPA2' ? 'bg-primary' : 'bg-danger'}">
+                                        ${network.encryption}
+                                    </span>
+                                    <span class="threat-level ${analysis.threat_level.toLowerCase()}">
+                                        ${analysis.threat_level} RISK
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <div class="display-4 fw-bold">${network.security_score}</div>
+                                <small class="text-muted">Security Score /100</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Security Checks</h5>
+                            <ul class="check-list">
+                                ${checksHtml}
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-exclamation-triangle me-2"></i>Vulnerabilities</h5>
+                            ${vulnHtml || '<p class="text-muted">No critical vulnerabilities found</p>'}
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h5><i class="fas fa-lightbulb me-2"></i>Recommendations</h5>
+                            ${recHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function displayAnalysis(analysis) {
+            const container = document.getElementById('analysisResults');
+            const network = analysis.network;
+            
+            // Create security meter if not exists
+            if (!meterChart) {
+                initSecurityMeter(network.security_score);
+            } else {
+                updateSecurityMeter(network.security_score);
+            }
+            
+            let vulnHtml = '';
+            analysis.vulnerabilities.forEach(vuln => {
+                vulnHtml += `
+                    <div class="vulnerability-card ${vuln.severity.toLowerCase()}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">${vuln.title}</h6>
+                                <p class="small mb-1">${vuln.description}</p>
+                                <small class="text-muted">Impact: ${vuln.impact}</small>
+                            </div>
+                            <span class="badge bg-${vuln.severity === 'CRITICAL' ? 'danger' : 
+                                                    vuln.severity === 'HIGH' ? 'danger' : 
+                                                    vuln.severity === 'MEDIUM' ? 'warning' : 'info'}">
+                                ${vuln.severity}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            let recHtml = '';
+            analysis.recommendations.slice(0, 5).forEach(rec => {
+                recHtml += `<li class="mb-2"><i class="fas fa-chevron-right text-primary me-2"></i>${rec}</li>`;
+            });
+            
+            container.innerHTML = `
+                <div class="row">
+                    <!-- Security Meter -->
+                    <div class="col-lg-4">
+                        <div class="security-meter">
+                            <div class="meter-circle">
+                                <canvas id="securityMeter"></canvas>
+                                <div class="meter-score">${network.security_score}</div>
+                            </div>
+                            <h4>Security Score</h4>
+                            <p class="text-muted">${network.ssid}</p>
+                            <div class="mb-3">
+                                <span class="threat-level ${analysis.threat_level.toLowerCase()}">
+                                    ${analysis.threat_level} RISK
+                                </span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" style="width: ${network.security_score}%"></div>
+                            </div>
+                            <small class="text-muted mt-2 d-block">Score: ${network.security_score}/100</small>
+                        </div>
+                        
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                <h6><i class="fas fa-info-circle me-2"></i>Quick Stats</h6>
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <div class="fw-bold">${analysis.checks.filter(c => c.status === 'PASS').length}</div>
+                                        <small class="text-muted">Passed</small>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="fw-bold">${analysis.vulnerabilities.length}</div>
+                                        <small class="text-muted">Vulnerabilities</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Analysis Details -->
+                    <div class="col-lg-8">
+                        <div class="row">
+                            <div class="col-12 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5><i class="fas fa-exclamation-triangle me-2"></i>Vulnerabilities Found</h5>
+                                        ${vulnHtml || '<p class="text-muted">No critical vulnerabilities detected</p>'}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5><i class="fas fa-clipboard-list me-2"></i>Top Recommendations</h5>
+                                        <ul class="list-unstyled">
+                                            ${recHtml}
+                                        </ul>
+                                        <button class="btn btn-sm btn-outline-primary mt-2" onclick="viewFullAnalysis()">
+                                            View All Recommendations
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5><i class="fas fa-shield-alt me-2"></i>Security Comparison</h5>
+                                        <table class="table compare-table">
+                                            <tr>
+                                                <th>Encryption</th>
+                                                <td>${network.encryption}</td>
+                                                <td>${network.encryption === 'WPA3' ? '✓ Excellent' : 
+                                                      network.encryption === 'WPA2' ? '✓ Good' : 
+                                                      '✗ Poor'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Risk Level</th>
+                                                <td>${analysis.threat_level}</td>
+                                                <td>${analysis.threat_level === 'LOW' ? '✓ Safe' : 
+                                                      analysis.threat_level === 'MEDIUM' ? '⚠ Moderate' : 
+                                                      '✗ High Risk'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Checks Passed</th>
+                                                <td>${analysis.checks.filter(c => c.status === 'PASS').length}/${analysis.checks.length}</td>
+                                                <td>${(analysis.checks.filter(c => c.status === 'PASS').length / analysis.checks.length * 100).toFixed(0)}%</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5><i class="fas fa-download me-2"></i>Export Analysis</h5>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button class="btn btn-primary" onclick="saveAnalysis()">
+                                        <i class="fas fa-save me-2"></i>Save Report
+                                    </button>
+                                    <button class="btn btn-outline-primary" onclick="exportAnalysis()">
+                                        <i class="fas fa-file-export me-2"></i>Export as JSON
+                                    </button>
+                                    <button class="btn btn-outline-success" onclick="shareAnalysis()">
+                                        <i class="fas fa-share me-2"></i>Share Results
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="clearAnalysis()">
+                                        <i class="fas fa-trash me-2"></i>Clear Analysis
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function initSecurityMeter(score) {
+            const ctx = document.getElementById('securityMeter').getContext('2d');
+            meterChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [score, 100 - score],
+                        backgroundColor: [getScoreColor(score), '#e9ecef'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    circumference: 180,
+                    rotation: -90,
+                    cutout: '80%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                }
+            });
+        }
+        
+        function updateSecurityMeter(score) {
+            if (meterChart) {
+                meterChart.data.datasets[0].data = [score, 100 - score];
+                meterChart.data.datasets[0].backgroundColor[0] = getScoreColor(score);
+                meterChart.update();
+            }
+        }
+        
+        function getScoreColor(score) {
+            if (score >= 80) return '#198754';
+            if (score >= 60) return '#0dcaf0';
+            if (score >= 40) return '#ffc107';
+            if (score >= 20) return '#fd7e14';
+            return '#dc3545';
+        }
+        
+        function runNewAnalysis() {
+            document.getElementById('networkSelect').value = '';
+            document.getElementById('analysisResults').innerHTML = `
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-search fa-3x text-muted"></i>
+                    </div>
+                    <h4>No Analysis Yet</h4>
+                    <p class="text-muted mb-4">
+                        Select a network from the dropdown above to start security analysis
+                    </p>
+                </div>
+            `;
+            Utils.showNotification('Ready for new analysis', 'info');
+        }
+        
+        function saveAnalysis() {
+            if (!currentAnalysis) {
+                Utils.showNotification('No analysis to save', 'warning');
+                return;
+            }
+            
+            ReportModule.generateReport();
+            bootstrap.Modal.getInstance(document.getElementById('analysisModal')).hide();
+        }
+        
+        function exportAnalysis() {
+            if (!currentAnalysis) {
+                Utils.showNotification('No analysis to export', 'warning');
+                return;
+            }
+            
+            const dataStr = JSON.stringify(currentAnalysis, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const exportFileDefaultName = `wifi-analysis-${new Date().getTime()}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            Utils.showNotification('Analysis exported successfully', 'success');
+        }
+        
+        function shareAnalysis() {
+            if (!currentAnalysis) {
+                Utils.showNotification('No analysis to share', 'warning');
+                return;
+            }
+            
+            const text = `WiFi Security Analysis for ${currentAnalysis.network.ssid}: Score ${currentAnalysis.network.security_score}/100`;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'WiFi Security Analysis',
+                    text: text,
+                    url: window.location.href
+                });
+            } else {
+                Utils.copyToClipboard(text);
+                Utils.showNotification('Analysis summary copied to clipboard', 'info');
+            }
+        }
+        
+        function clearAnalysis() {
+            if (confirm('Clear current analysis?')) {
+                localStorage.removeItem('lastAnalysis');
+                currentAnalysis = null;
+                runNewAnalysis();
+                Utils.showNotification('Analysis cleared', 'warning');
+            }
+        }
+        
+        function viewFullAnalysis() {
+            if (currentAnalysis) {
+                displayAnalysisInModal(currentAnalysis);
+                const modal = new bootstrap.Modal(document.getElementById('analysisModal'));
+                modal.show();
+            }
+        }
+    </script>
+</body>
+</html>

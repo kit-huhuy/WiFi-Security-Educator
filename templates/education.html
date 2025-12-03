@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Education - WiFi Security Educator</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+    <style>
+        .education-header {
+            background: linear-gradient(135deg, #20c997 0%, #0ca678 100%);
+            color: white;
+            padding: 2rem 0;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+        }
+        
+        .topic-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-normal);
+            height: 100%;
+        }
+        
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .topic-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .lesson-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+        }
+        
+        .quiz-card {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), rgba(58, 12, 163, 0.05));
+            border: 1px solid rgba(67, 97, 238, 0.2);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .quiz-option {
+            padding: 0.75rem;
+            border: 2px solid #dee2e6;
+            border-radius: var(--radius-md);
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .quiz-option:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.05);
+        }
+        
+        .quiz-option.correct {
+            border-color: #198754;
+            background: rgba(25, 135, 84, 0.1);
+        }
+        
+        .quiz-option.incorrect {
+            border-color: #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+        }
+        
+        .progress-tracker {
+            position: sticky;
+            top: 20px;
+        }
+        
+        .progress-item {
+            padding: 0.75rem;
+            border-left: 3px solid #dee2e6;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .progress-item:hover {
+            background: rgba(67, 97, 238, 0.05);
+        }
+        
+        .progress-item.active {
+            border-left-color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+            font-weight: 600;
+        }
+        
+        .progress-item.completed {
+            border-left-color: #198754;
+        }
+        
+        .security-tip {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(253, 126, 20, 0.1));
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin: 1rem 0;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: var(--radius-md);
+            margin: 1rem 0;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glossary-term {
+            padding: 0.5rem;
+            border-bottom: 1px solid #dee2e6;
+            cursor: pointer;
+        }
+        
+        .glossary-term:hover {
+            background: #f8f9fa;
+        }
+        
+        .certificate {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #dee2e6;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .certificate::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 1px dashed #adb5bd;
+            border-radius: var(--radius-md);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-shield-alt"></i>
+                <span>WiFi Security Educator</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">
+                            <i class="fas fa-dashboard"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/scan">
+                            <i class="fas fa-wifi"></i> Scan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/analyze">
+                            <i class="fas fa-search"></i> Analyze
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/generate">
+                            <i class="fas fa-key"></i> Generate
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/report">
+                            <i class="fas fa-file-alt"></i> Reports
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/education">
+                            <i class="fas fa-graduation-cap"></i> Learn
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/settings">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="education-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-5 fw-bold">
+                        <i class="fas fa-graduation-cap"></i> Security Education
+                    </h1>
+                    <p class="lead mb-0">
+                        Learn about WiFi security, threats, and best practices
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="d-flex align-items-center justify-content-md-end gap-2">
+                        <span class="badge bg-light text-dark" id="progressBadge">
+                            <i class="fas fa-spinner fa-spin me-1"></i> Loading...
+                        </span>
+                        <button class="btn btn-light" onclick="resetProgress()">
+                            <i class="fas fa-redo me-1"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Progress -->
+            <div class="col-lg-3">
+                <div class="progress-tracker">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3">
+                                <i class="fas fa-road me-2"></i>Learning Path
+                            </h6>
+                            <div id="progressList">
+                                <!-- Progress items loaded dynamically -->
+                            </div>
+                            <div class="mt-3">
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar" id="overallProgress" style="width: 0%"></div>
+                                </div>
+                                <small class="text-muted d-block mt-1">
+                                    <span id="completedCount">0</span> of <span id="totalLessons">8</span> completed
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3">
+                                <i class="fas fa-trophy me-2"></i>Achievements
+                            </h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge bg-success" id="beginnerBadge">
+                                    <i class="fas fa-star me-1"></i>Beginner
+                                </span>
+                                <span class="badge bg-secondary" id="intermediateBadge">
+                                    <i class="fas fa-star me-1"></i>Intermediate
+                                </span>
+                                <span class="badge bg-warning" id="expertBadge">
+                                    <i class="fas fa-star me-1"></i>Expert
+                                </span>
+                                <span class="badge bg-info" id="quizMasterBadge">
+                                    <i class="fas fa-brain me-1"></i>Quiz Master
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <!-- Topic Selection -->
+                <div id="topicSelection">
+                    <h3 class="mb-4">Choose a Topic to Learn</h3>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="topic-card" onclick="loadLesson('basics')">
+                                <div class="topic-icon bg-primary bg-opacity-10 text-primary">
+                                    <i class="fas fa-wifi"></i>
+                                </div>
+                                <h5>WiFi Basics</h5>
+                                <p class="text-muted small">
+                                    Understand fundamental concepts of wireless networking
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <span class="badge bg-primary">Beginner</span>
+                                    <small class="text-muted">5 min read</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="topic-card" onclick="loadLesson('encryption')">
+                                <div class="topic-icon bg-success bg-opacity-10 text-success">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                                <h5>Encryption</h5>
+                                <p class="text-muted small">
+                                    Learn about WEP, WPA, WPA2, and WPA3 encryption
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <span class="badge bg-success">Intermediate</span>
+                                    <small class="text-muted">8 min read</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="topic-card" onclick="loadLesson('threats')">
+                                <div class="topic-icon bg-danger bg-opacity-10 text-danger">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <h5>Security Threats</h5>
+                                <p class="text-muted small">
+                                    Common WiFi attacks and how to protect against them
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <span class="badge bg-danger">Advanced</span>
+                                    <small class="text-muted">10 min read</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="topic-card" onclick="loadLesson('passwords')">
+                                <div class="topic-icon bg-warning bg-opacity-10 text-warning">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                                <h5>Password Security</h5>
+                                <p class="text-muted small">
+                                    Creating and managing strong WiFi passwords
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <span class="badge bg-warning">Intermediate</span>
+                                    <small class="text-muted">6 min read</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="topic-card" onclick="loadLesson('bestpractices')">
+                                <div class="topic-icon bg-info bg-opacity-10 text-info">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <h5>Best Practices</h5>
+                                <p class="text-muted small">
+                                    Essential security practices for home and business networks
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <span class="badge bg-info">All Levels</span>
+                                    <small class="text-muted">7 min read</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="topic-card" onclick="loadLesson('tools')">
+                                <div class="topic-icon bg-secondary bg-opacity-10 text-secondary">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <h5>Security Tools</h5>
+                                <p class="text-muted small">
+                                    Tools and software for WiFi security testing
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <span class="badge bg-secondary">Expert</span>
+                                    <small class="text-muted">12 min read</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lesson Content -->
+                <div id="lessonContent" style="display: none;">
+                    <div class="lesson-content">
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+                            <div>
+                                <h3 id="lessonTitle">Lesson Title</h3>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge" id="lessonLevel">Level</span>
+                                    <small class="text-muted" id="lessonTime">0 min read</small>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline-secondary" onclick="backToTopics()">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Topics
+                            </button>
+                        </div>
+                        
+                        <div id="lessonBody">
+                            <!-- Lesson content loaded dynamically -->
+                        </div>
+                        
+                        <div class="mt-4 pt-4 border-top">
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-outline-primary" id="prevBtn" onclick="previousLesson()">
+                                    <i class="fas fa-chevron-left me-2"></i>Previous
+                                </button>
+                                <button class="btn btn-primary" id="nextBtn" onclick="nextLesson()">
+                                    Next Lesson <i class="fas fa-chevron-right ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quiz Section -->
+                    <div class="card mt-4" id="quizSection" style="display: none;">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">
+                                <i class="fas fa-brain me-2"></i>Knowledge Check
+                            </h5>
+                            <div id="quizContent">
+                                <!-- Quiz loaded dynamically -->
+                            </div>
+                            <div class="text-center mt-4">
+                                <button class="btn btn-success" id="submitQuizBtn" onclick="submitQuiz()" style="display: none;">
+                                    <i class="fas fa-check me-2"></i>Submit Answers
+                                </button>
+                                <button class="btn btn-outline-primary" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                                    Next Question <i class="fas fa-arrow-right ms-2"></i>
+                                </button>
+                                <div id="quizResult" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Glossary -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">
+                            <i class="fas fa-book me-2"></i>Security Glossary
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="glossary-term" onclick="showDefinition('wpa3')">
+                                    <strong>WPA3</strong> - Latest WiFi security protocol
+                                </div>
+                                <div class="glossary-term" onclick="showDefinition('encryption')">
+                                    <strong>Encryption</strong> - Securing data transmission
+                                </div>
+                                <div class="glossary-term" onclick="showDefinition('ssid')">
+                                    <strong>SSID</strong> - Network name identifier
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="glossary-term" onclick="showDefinition('mitm')">
+                                    <strong>MITM</strong> - Man-in-the-Middle attack
+                                </div>
+                                <div class="glossary-term" onclick="showDefinition('vpn')">
+                                    <strong>VPN</strong> - Virtual Private Network
+                                </div>
+                                <div class="glossary-term" onclick="showDefinition('firewall')">
+                                    <strong>Firewall</strong> - Network security system
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="/static/js/app.js"></script>
+    
+    <script>
+        const lessons = {
+            basics: {
+                title: "WiFi Networking Basics",
+                level: "beginner",
+                time: "5",
+                content: `
+                    <h4>What is WiFi?</h4>
+                    <p>WiFi (Wireless Fidelity) is a technology that allows electronic devices to connect to a wireless Local Area Network (LAN), typically using the 2.4 GHz or 5 GHz radio bands.</p>
+                    
+                    <div class="security-tip">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <strong>Tip:</strong> Always use the 5 GHz band when possible for faster speeds and less interference.
+                    </div>
+                    
+                    <h5 class="mt-4">Key Components:</h5>
+                    <ul>
+                        <li><strong>Access Point (AP):</strong> Device that creates a wireless network</li>
+                        <li><strong>SSID:</strong> Network name (Service Set Identifier)</li>
+                        <li><strong>Channel:</strong> Frequency band used for communication</li>
+                        <li><strong>Bandwidth:</strong> Data transmission capacity</li>
+                    </ul>
+                    
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/Vxr-6I_qeOY" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                `,
+                quiz: [
+                    {
+                        question: "What does WiFi stand for?",
+                        options: [
+                            "Wireless Fidelity",
+                            "Wired Fidelity", 
+                            "Wireless Frequency",
+                            "Wide Fidelity"
+                        ],
+                        correct: 0
+                    },
+                    {
+                        question: "Which frequency bands does WiFi commonly use?",
+                        options: [
+                            "2.4 GHz and 5 GHz",
+                            "900 MHz and 2.4 GHz",
+                            "5 GHz and 10 GHz", 
+                            "All of the above"
+                        ],
+                        correct: 0
+                    }
+                ]
+            },
+            encryption: {
+                title: "WiFi Encryption Protocols",
+                level: "intermediate",
+                time: "8",
+                content: `
+                    <h4>Understanding WiFi Encryption</h4>
+                    <p>Encryption is the process of encoding information to prevent unauthorized access. WiFi uses several encryption protocols:</p>
+                    
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Protocol</th>
+                                    <th>Security Level</th>
+                                    <th>Year Introduced</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>WEP</strong></td>
+                                    <td><span class="badge bg-danger">Very Weak</span></td>
+                                    <td>1997</td>
+                                    <td>Deprecated</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>WPA</strong></td>
+                                    <td><span class="badge bg-warning">Weak</span></td>
+                                    <td>2003</td>
+                                    <td>Obsolete</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>WPA2</strong></td>
+                                    <td><span class="badge bg-success">Strong</span></td>
+                                    <td>2004</td>
+                                    <td>Recommended</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>WPA3</strong></td>
+                                    <td><span class="badge bg-success">Very Strong</span></td>
+                                    <td>2018</td>
+                                    <td>Latest Standard</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h5 class="mt-4">Key Improvements in WPA3:</h5>
+                    <ul>
+                        <li><strong>Simultaneous Authentication of Equals (SAE):</strong> Protects against brute-force attacks</li>
+                        <li><strong>Forward Secrecy:</strong> Prevents decryption of old captured traffic</li>
+                        <li><strong>192-bit Security:</strong> Enhanced encryption for enterprise networks</li>
+                        <li><strong>Easy Connect:</strong> Simplified IoT device setup</li>
+                    </ul>
+                    
+                    <div class="security-tip">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <strong>Important:</strong> Always use WPA2 or WPA3. WEP and WPA are no longer secure.
+                    </div>
+                `,
+                quiz: [
+                    {
+                        question: "Which encryption protocol should you avoid?",
+                        options: [
+                            "WEP",
+                            "WPA2",
+                            "WPA3",
+                            "Both WEP and WPA"
+                        ],
+                        correct: 3
+                    },
+                    {
+                        question: "What is the main advantage of WPA3 over WPA2?",
+                        options: [
+                            "Better protection against brute-force attacks",
+                            "Faster connection speeds",
+                            "Longer range",
+                            "Lower power consumption"
+                        ],
+                        correct: 0
+                    }
+                ]
+            },
+            threats: {
+                title: "Common WiFi Security Threats",
+                level: "advanced",
+                time: "10",
+                content: `
+                    <h4>Major WiFi Security Threats</h4>
+                    
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Understanding these threats is crucial for protecting your network.
+                    </div>
+                    
+                    <h5>1. Evil Twin Attacks</h5>
+                    <p>Attackers create a fake WiFi access point with a legitimate-sounding name to trick users into connecting.</p>
+                    
+                    <h5>2. Packet Sniffing</h5>
+                    <p>Intercepting and logging unencrypted data packets traveling over the network.</p>
+                    
+                    <h5>3. KRACK (Key Reinstallation Attacks)</h5>
+                    <p>Exploiting vulnerabilities in the WPA2 handshake to decrypt traffic.</p>
+                    
+                    <h5>4. Man-in-the-Middle (MITM) Attacks</h5>
+                    <p>Intercepting and potentially altering communication between two parties.</p>
+                    
+                    <h5>5. Brute Force Attacks</h5>
+                    <p>Systematically trying all possible passwords until the correct one is found.</p>
+                    
+                    <div class="security-tip">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        <strong>Protection:</strong> Use VPNs on public WiFi, enable WPA3, and avoid connecting to unknown networks.
+                    </div>
+                    
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/2bL_g7x_kyY" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                `,
+                quiz: [
+                    {
+                        question: "What is an Evil Twin attack?",
+                        options: [
+                            "A fake WiFi access point",
+                            "A type of virus",
+                            "A hardware malfunction",
+                            "A password cracking tool"
+                        ],
+                        correct: 0
+                    },
+                    {
+                        question: "How can you protect against MITM attacks?",
+                        options: [
+                            "Use a VPN",
+                            "Disable WiFi",
+                            "Use longer passwords",
+                            "All of the above"
+                        ],
+                        correct: 0
+                    }
+                ]
+            }
+        };
+        
+        const lessonOrder = ['basics', 'encryption', 'threats', 'passwords', 'bestpractices', 'tools'];
+        let currentLesson = '';
+        let userProgress = {};
+        let quizState = {
+            currentQuestion: 0,
+            answers: [],
+            score: 0
+        };
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserProgress();
+            updateProgressDisplay();
+        });
+        
+        function loadUserProgress() {
+            const savedProgress = localStorage.getItem('educationProgress');
+            if (savedProgress) {
+                try {
+                    userProgress = JSON.parse(savedProgress);
+                } catch (e) {
+                    console.error('Failed to load progress:', e);
+                    userProgress = {};
+                }
+            }
+        }
+        
+        function saveUserProgress() {
+            localStorage.setItem('educationProgress', JSON.stringify(userProgress));
+        }
+        
+        function updateProgressDisplay() {
+            const completed = Object.keys(userProgress).filter(id => userProgress[id].completed).length;
+            const total = lessonOrder.length;
+            const progress = (completed / total) * 100;
+            
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('totalLessons').textContent = total;
+            document.getElementById('overallProgress').style.width = progress + '%';
+            
+            // Update progress badge
+            const progressBadge = document.getElementById('progressBadge');
+            if (progress >= 100) {
+                progressBadge.innerHTML = '<i class="fas fa-trophy me-1"></i> Complete!';
+                progressBadge.className = 'badge bg-success';
+            } else if (progress >= 50) {
+                progressBadge.innerHTML = `<i class="fas fa-chart-line me-1"></i> ${Math.round(progress)}%`;
+                progressBadge.className = 'badge bg-warning';
+            } else {
+                progressBadge.innerHTML = `<i class="fas fa-spinner me-1"></i> ${Math.round(progress)}%`;
+                progressBadge.className = 'badge bg-info';
+            }
+            
+            // Update progress list
+            const progressList = document.getElementById('progressList');
+            let html = '';
+            
+            lessonOrder.forEach((lessonId, index) => {
+                const lesson = lessons[lessonId];
+                const progress = userProgress[lessonId] || { completed: false, quizScore: 0 };
+                
+                html += `
+                    <div class="progress-item ${currentLesson === lessonId ? 'active' : ''} ${progress.completed ? 'completed' : ''}" 
+                         onclick="loadLesson('${lessonId}')">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>${index + 1}. ${lesson.title}</strong>
+                                <div class="small text-muted">${lesson.time} min • ${lesson.level}</div>
+                            </div>
+                            ${progress.completed ? 
+                                `<i class="fas fa-check text-success"></i>` : 
+                                `<i class="far fa-circle text-muted"></i>`}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            progressList.innerHTML = html;
+            
+            // Update achievements
+            updateAchievements();
+        }
+        
+        function updateAchievements() {
+            const completed = Object.keys(userProgress).filter(id => userProgress[id].completed).length;
+            
+            // Beginner achievement (complete 1 lesson)
+            if (completed >= 1) {
+                document.getElementById('beginnerBadge').classList.remove('bg-secondary');
+                document.getElementById('beginnerBadge').classList.add('bg-success');
+            }
+            
+            // Intermediate achievement (complete 3 lessons)
+            if (completed >= 3) {
+                document.getElementById('intermediateBadge').classList.remove('bg-secondary');
+                document.getElementById('intermediateBadge').classList.add('bg-warning');
+            }
+            
+            // Expert achievement (complete all lessons)
+            if (completed >= lessonOrder.length) {
+                document.getElementById('expertBadge').classList.remove('bg-secondary');
+                document.getElementById('expertBadge').classList.add('bg-danger');
+            }
+            
+            // Quiz Master achievement (average quiz score > 80%)
+            const quizScores = Object.values(userProgress)
+                .filter(p => p.quizScore > 0)
+                .map(p => p.quizScore);
+            
+            if (quizScores.length > 0) {
+                const averageScore = quizScores.reduce((a, b) => a + b, 0) / quizScores.length;
+                if (averageScore >= 80) {
+                    document.getElementById('quizMasterBadge').classList.remove('bg-secondary');
+                    document.getElementById('quizMasterBadge').classList.add('bg-info');
+                }
+            }
+        }
+        
+        function loadLesson(lessonId) {
+            if (!lessons[lessonId]) {
+                Utils.showNotification('Lesson not available yet', 'info');
+                return;
+            }
+            
+            currentLesson = lessonId;
+            const lesson = lessons[lessonId];
+            
+            // Show lesson content, hide topic selection
+            document.getElementById('topicSelection').style.display = 'none';
+            document.getElementById('lessonContent').style.display = 'block';
+            document.getElementById('quizSection').style.display = 'none';
+            
+            // Update lesson info
+            document.getElementById('lessonTitle').textContent = lesson.title;
+            document.getElementById('lessonLevel').textContent = lesson.level.charAt(0).toUpperCase() + lesson.level.slice(1);
+            document.getElementById('lessonLevel').className = `badge bg-${getLevelColor(lesson.level)}`;
+            document.getElementById('lessonTime').textContent = lesson.time + ' min read';
+            
+            // Load lesson content
+            document.getElementById('lessonBody').innerHTML = lesson.content;
+            
+            // Update navigation buttons
+            const currentIndex = lessonOrder.indexOf(lessonId);
+            document.getElementById('prevBtn').style.display = currentIndex > 0 ? 'block' : 'none';
+            document.getElementById('nextBtn').textContent = currentIndex < lessonOrder.length - 1 ? 
+                'Next Lesson <i class="fas fa-chevron-right ms-2"></i>' : 
+                'Take Quiz <i class="fas fa-brain ms-2"></i>';
+            
+            // Update progress display
+            updateProgressDisplay();
+            
+            // Mark as viewed
+            if (!userProgress[lessonId]) {
+                userProgress[lessonId] = { completed: false, quizScore: 0, viewed: true };
+                saveUserProgress();
+            }
+        }
+        
+        function getLevelColor(level) {
+            switch(level) {
+                case 'beginner': return 'primary';
+                case 'intermediate': return 'success';
+                case 'advanced': return 'danger';
+                case 'expert': return 'secondary';
+                default: return 'info';
+            }
+        }
+        
+        function backToTopics() {
+            document.getElementById('topicSelection').style.display = 'block';
+            document.getElementById('lessonContent').style.display = 'none';
+            currentLesson = '';
+            updateProgressDisplay();
+        }
+        
+        function previousLesson() {
+            const currentIndex = lessonOrder.indexOf(currentLesson);
+            if (currentIndex > 0) {
+                loadLesson(lessonOrder[currentIndex - 1]);
+            }
+        }
+        
+        function nextLesson() {
+            const currentIndex = lessonOrder.indexOf(currentLesson);
+            
+            if (currentIndex < lessonOrder.length - 1) {
+                loadLesson(lessonOrder[currentIndex + 1]);
+            } else {
+                // Last lesson - show quiz
+                startQuiz();
+            }
+        }
+        
+        function startQuiz() {
+            const lesson = lessons[currentLesson];
+            if (!lesson.quiz || lesson.quiz.length === 0) {
+                Utils.showNotification('No quiz available for this lesson', 'info');
+                return;
+            }
+            
+            document.getElementById('quizSection').style.display = 'block';
+            quizState = {
+                currentQuestion: 0,
+                answers: [],
+                score: 0
+            };
+            
+            loadQuizQuestion();
+        }
+        
+        function loadQuizQuestion() {
+            const lesson = lessons[currentLesson];
+            const question = lesson.quiz[quizState.currentQuestion];
+            
+            let optionsHtml = '';
+            question.options.forEach((option, index) => {
+                optionsHtml += `
+                    <div class="quiz-option" onclick="selectAnswer(${index})" id="option${index}">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="quizAnswer" id="answer${index}">
+                            <label class="form-check-label" for="answer${index}">
+                                ${option}
+                            </label>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('quizContent').innerHTML = `
+                <h6>Question ${quizState.currentQuestion + 1} of ${lesson.quiz.length}</h6>
+                <p class="mb-3">${question.question}</p>
+                ${optionsHtml}
+            `;
+            
+            document.getElementById('submitQuizBtn').style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+            document.getElementById('quizResult').style.display = 'none';
+            
+            // Clear previous selections
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('correct', 'incorrect', 'selected');
+            });
+        }
+        
+        function selectAnswer(answerIndex) {
+            // Clear all selections
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('selected');
+                const radio = opt.querySelector('input[type="radio"]');
+                if (radio) radio.checked = false;
+            });
+            
+            // Select this answer
+            const selectedOption = document.getElementById(`option${answerIndex}`);
+            selectedOption.classList.add('selected');
+            const radio = selectedOption.querySelector('input[type="radio"]');
+            if (radio) radio.checked = true;
+            
+            quizState.answers[quizState.currentQuestion] = answerIndex;
+        }
+        
+        function submitQuiz() {
+            const lesson = lessons[currentLesson];
+            const question = lesson.quiz[quizState.currentQuestion];
+            const selectedAnswer = quizState.answers[quizState.currentQuestion];
+            
+            if (selectedAnswer === undefined) {
+                Utils.showNotification('Please select an answer', 'warning');
+                return;
+            }
+            
+            // Show correct/incorrect
+            document.querySelectorAll('.quiz-option').forEach((opt, index) => {
+                if (index === question.correct) {
+                    opt.classList.add('correct');
+                } else if (index === selectedAnswer && index !== question.correct) {
+                    opt.classList.add('incorrect');
+                }
+                opt.style.pointerEvents = 'none';
+            });
+            
+            // Check if correct
+            if (selectedAnswer === question.correct) {
+                quizState.score++;
+            }
+            
+            // Update UI
+            document.getElementById('submitQuizBtn').style.display = 'none';
+            
+            const lesson = lessons[currentLesson];
+            if (quizState.currentQuestion < lesson.quiz.length - 1) {
+                document.getElementById('nextQuizBtn').style.display = 'block';
+            } else {
+                // Last question - show results
+                showQuizResults();
+            }
+        }
+        
+        function nextQuestion() {
+            quizState.currentQuestion++;
+            loadQuizQuestion();
+        }
+        
+        function showQuizResults() {
+            const lesson = lessons[currentLesson];
+            const scorePercentage = (quizState.score / lesson.quiz.length) * 100;
+            const passed = scorePercentage >= 70;
+            
+            let resultHtml = '';
+            if (passed) {
+                resultHtml = `
+                    <div class="alert alert-success">
+                        <h5><i class="fas fa-trophy me-2"></i>Quiz Passed!</h5>
+                        <p>Your score: ${quizState.score}/${lesson.quiz.length} (${Math.round(scorePercentage)}%)</p>
+                        <button class="btn btn-success" onclick="completeLesson()">
+                            <i class="fas fa-check me-2"></i>Complete Lesson
+                        </button>
+                    </div>
+                `;
+            } else {
+                resultHtml = `
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-redo me-2"></i>Try Again</h5>
+                        <p>Your score: ${quizState.score}/${lesson.quiz.length} (${Math.round(scorePercentage)}%)</p>
+                        <p>You need 70% to pass. Try reviewing the lesson.</p>
+                        <button class="btn btn-warning" onclick="retryQuiz()">
+                            <i class="fas fa-redo me-2"></i>Retry Quiz
+                        </button>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('quizResult').innerHTML = resultHtml;
+            document.getElementById('quizResult').style.display = 'block';
+        }
+        
+        function retryQuiz() {
+            startQuiz();
+        }
+        
+        function completeLesson() {
+            const lesson = lessons[currentLesson];
+            const scorePercentage = (quizState.score / lesson.quiz.length) * 100;
+            
+            userProgress[currentLesson] = {
+                completed: true,
+                quizScore: scorePercentage,
+                completedDate: new Date().toISOString()
+            };
+            
+            saveUserProgress();
+            updateProgressDisplay();
+            
+            // Show certificate if all lessons completed
+            const completedCount = Object.keys(userProgress).filter(id => userProgress[id].completed).length;
+            if (completedCount === lessonOrder.length) {
+                showCertificate();
+            }
+            
+            Utils.showNotification('Lesson completed successfully!', 'success');
+            backToTopics();
+        }
+        
+        function showCertificate() {
+            const certificateHtml = `
+                <div class="certificate">
+                    <h2><i class="fas fa-award text-warning"></i> Certificate of Completion</h2>
+                    <p class="lead">WiFi Security Education</p>
+                    <div class="display-4 fw-bold my-4">Congratulations!</div>
+                    <p>You have successfully completed all WiFi security lessons</p>
+                    <div class="mt-4">
+                        <p><strong>Completed:</strong> ${new Date().toLocaleDateString()}</p>
+                        <p><strong>Skills Mastered:</strong> WiFi Basics, Encryption, Security Threats, Best Practices</p>
+                    </div>
+                    <div class="mt-4">
+                        <button class="btn btn-primary" onclick="downloadCertificate()">
+                            <i class="fas fa-download me-2"></i>Download Certificate
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('lessonBody').innerHTML = certificateHtml;
+            document.getElementById('quizSection').style.display = 'none';
+        }
+        
+        function downloadCertificate() {
+            // In a real app, this would generate a PDF certificate
+            Utils.showNotification('Certificate download started (simulated)', 'info');
+        }
+        
+        function resetProgress() {
+            if (confirm('Reset all learning progress? This cannot be undone.')) {
+                userProgress = {};
+                saveUserProgress();
+                updateProgressDisplay();
+                backToTopics();
+                Utils.showNotification('Progress reset successfully', 'warning');
+            }
+        }
+        
+        function showDefinition(term) {
+            const definitions = {
+                wpa3: 'Wi-Fi Protected Access 3 - The latest security protocol for WiFi networks',
+                encryption: 'Process of encoding information to prevent unauthorized access',
+                ssid: 'Service Set Identifier - The name of a WiFi network',
+                mitm: 'Man-in-the-Middle - Attack where someone intercepts communication',
+                vpn: 'Virtual Private Network - Encrypted connection over the internet',
+                firewall: 'Network security system that monitors incoming/outgoing traffic'
+            };
+            
+            Utils.showNotification(definitions[term] || 'Definition not found', 'info');
+        }
+    </script>
+</body>
+</html>
