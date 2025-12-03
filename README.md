@@ -43,4 +43,5 @@ cd wifi_security
 pip install flask colorama
 
 # 2. Run the web application
-python main.py
+python main.py ```
+
