@@ -45,6 +45,8 @@ pip install -r requirements.txt
 
 # 2. Run the web application
 python app.py
+
+python main.py (have some bug) 
 ```
 ## **🖥️ Usage
 **Web Interface**
