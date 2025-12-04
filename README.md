@@ -41,7 +41,7 @@ cd WiFi-Security-Educator
 cd webui
 
 # 2. Install dependencies
-pip install flask colorama
+pip install -r requirements.txt
 
 # 2. Run the web application
 python app.py
