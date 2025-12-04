@@ -1,1 +1,19 @@
+# WiFi Security Scanner - Requirements
+# Version: 4.0
+# Python 3.6+
 
+## Core Dependencies
+Flask==2.3.3
+Werkzeug==2.3.7
+
+## System Utilities
+psutil==5.9.5
+netifaces==0.11.0
+
+## Development & Debugging
+python-dotenv==1.0.0
+
+## Optional (for enhanced features)
+# requests==2.31.0  # For API calls if needed
+# pycryptodome==3.18.0  # For encryption utilities
+# colorama==0.4.6  # For colored terminal output
